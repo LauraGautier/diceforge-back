@@ -1,7 +1,19 @@
 import bcrypt from 'bcryptjs';
 import pool from '../../config/pg.js';  
 
+
 export const createUser = async (req, res) => {
+    
+    /**
+     * Create a user.
+     * 
+     * @param {object} req - The request object.
+     * @param {object} res - The response object.
+     * @returns {object} - The user object.
+     * @description This function creates a new user.
+     * @summary Create a user.
+     */
+    
   const { email, lastname, firstname, password, confirmPassword } = req.body;
 
     if (!email || !lastname || !firstname || !password || !confirmPassword) {
