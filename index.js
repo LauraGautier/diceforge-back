@@ -18,6 +18,16 @@ app.use(express.json());
 // Rendre les fichiers statiques disponibles
 app.use(express.static("./public"));
 
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 },
+  })
+);
+
 app.use(router);
 
 app.listen(PORT, () => {
