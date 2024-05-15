@@ -5,22 +5,22 @@ import UserDataMapper from '../datamappers/user.datamapper.js';
 const userDataMapper = new UserDataMapper(pool);
 
 export const createUser = async (req, res) => {
-  
-      /**
-     * Creates a new user in the database.
-     *
-     * @param {object} req - The HTTP request object, containing details of the user to be created.
-     * @param {object} res - The HTTP response object to send responses back to the client.
-     * @returns {Promise<void>} - A promise that resolves by sending an HTTP response.
-     *
-     * @description
-     * This function extracts user information from the request object, verifies the validity of the data,
-     * and uses UserDataMapper to create the user in the database. HTTP responses are sent based on the result of the operations:
-     * - 400 if mandatory information is missing or if the passwords do not match.
-     * - 409 if the email is already in use.
-     * - 201 if the user is successfully created.
-     * - 500 in case of a server error.
-     */
+
+    /**
+   * Creates a new user in the database.
+   *
+   * @param {object} req - The HTTP request object, containing details of the user to be created.
+   * @param {object} res - The HTTP response object to send responses back to the client.
+   * @returns {Promise<void>} - A promise that resolves by sending an HTTP response.
+   *
+   * @description
+   * This function extracts user information from the request object, verifies the validity of the data,
+   * and uses UserDataMapper to create the user in the database. HTTP responses are sent based on the result of the operations:
+   * - 400 if mandatory information is missing or if the passwords do not match.
+   * - 409 if the email is already in use.
+   * - 201 if the user is successfully created.
+   * - 500 in case of a server error.
+   */
 
     const { email, lastname, firstname, password, confirmPassword } = req.body;
 
@@ -34,7 +34,7 @@ export const createUser = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-        return res.status(400).json({ error: "Les mots de passe ne correspondent pas"});
+        return res.status(400).json({ error: "Les mots de passe ne correspondent pas" });
     }
 
     try {

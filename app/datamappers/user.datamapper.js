@@ -7,7 +7,8 @@ class UserDataMapper {
     async findUserByEmail(email) {
         const query = 'SELECT * FROM user WHERE email = $1';
         const result = await this.pool.query(query, [email]);
-        return result.rows.length > 0 || null;
+        return result.rows[0] || null;
+
     }
 
     async createUser(email, lastname, firstname, hashedPassword) {
