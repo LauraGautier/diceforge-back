@@ -13,7 +13,9 @@ CREATE TABLE "user" (
     firstname TEXT NOT NULL,
     password TEXT NOT NULL,
     email TEXT NOT NULL,
-    image TEXT
+    image TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "game" (
@@ -22,7 +24,9 @@ CREATE TABLE "game" (
     music TEXT,
     note TEXT,
     event TIMESTAMPTZ,
-    license_id INTEGER REFERENCES "license"(id)
+    license_id INTEGER REFERENCES "license"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "sheet" (
@@ -30,12 +34,16 @@ CREATE TABLE "sheet" (
     image TEXT,
     class TEXT,
     level INT,
-    game_id INTEGER REFERENCES "game"(id)
+    game_id INTEGER REFERENCES "game"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "characteristic" (
     id SERIAL NOT NULL PRIMARY KEY,
-    name TEXT
+    name TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "spell" (
@@ -46,27 +54,35 @@ CREATE TABLE "spell" (
     scope TEXT,
     school TEXT,
     type TEXT,
-    level INT
+    level INT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "object" (
     id SERIAL NOT NULL PRIMARY KEY,
     name TEXT,
-    description TEXT
+    description TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "play" (
     id SERIAL PRIMARY KEY,
     role TEXT NOT NULL,
     user_id INTEGER REFERENCES "user"(id),
-    game_id INTEGER REFERENCES "game"(id)
+    game_id INTEGER REFERENCES "game"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "contain" (
     id SERIAL NOT NULL PRIMARY KEY,
     quantity INT NOT NULL,
     object_id INTEGER REFERENCES "object"(id),
-    sheet_id INTEGER REFERENCES "sheet"(id)
+    sheet_id INTEGER REFERENCES "sheet"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "possesses" (
@@ -74,14 +90,18 @@ CREATE TABLE "possesses" (
     cost INT,
     limitation INT,
     spell_id INTEGER REFERENCES "spell"(id),
-    sheet_id INTEGER REFERENCES "sheet"(id)
+    sheet_id INTEGER REFERENCES "sheet"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "characterize" (
     id SERIAL NOT NULL PRIMARY KEY,
     value INT NOT NULL,
     characteristic_id INTEGER REFERENCES "characteristic"(id),
-    sheet_id INTEGER REFERENCES "sheet"(id)
+    sheet_id INTEGER REFERENCES "sheet"(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 COMMIT;
