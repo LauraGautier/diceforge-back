@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "dotenv": "^16.4.5",
+    "email-validator": "^2.0.4",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "jsdoc": "^4.0.3",

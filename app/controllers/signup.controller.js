@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs';
 import pool from '../../config/pg.client.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
+import emailValidator from 'email-validator';
+import { userSchema } from '../validators/user.validator.js';
 
 const userDataMapper = new UserDataMapper(pool);
 
@@ -24,6 +26,13 @@ export const createUser = async (req, res) => {
 
     const { email, lastname, firstname, password, confirmPassword } = req.body;
 
+    // Validate the user data with zod
+     try {
+        userSchema.parse({ firstname, lastname, password });
+    } catch (e) {
+        return res.status(400).json({ error: "Données invalides", details: e.errors });
+    }
+
     if (!email || !lastname || !firstname || !password || !confirmPassword) {
         return res.status(400).json({ error: "Tous les champs doivent être remplis" });
     }
@@ -31,6 +40,10 @@ export const createUser = async (req, res) => {
     const existingUser = await userDataMapper.findUserByEmail(email);
     if (existingUser) {
         return res.status(409).json({ error: "Cet email est déjà utilisé" });
+    }
+
+    if (!emailValidator.validate(email)) {
+        return res.status(400).json({ error: "Cet email n'est pas valide" });
     }
 
     if (password !== confirmPassword) {

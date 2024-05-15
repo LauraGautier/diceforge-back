@@ -9,6 +9,7 @@ import session from "express-session";
 import cors from "cors";
 import corsOptions from "./config/cors.config.js";
 
+
 // Initialisation de l'application
 const app = express();
 const PORT = process.env.PORT || 5000;
