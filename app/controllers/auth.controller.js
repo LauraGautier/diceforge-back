@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import pool from '../../config/pg.client.js';
-import { UserDataMapper } from '../datamappers/user.datamapper.js';
+import UserDataMapper from '../datamappers/user.datamapper.js';
 
 const userDataMapper = new UserDataMapper(pool);
 
