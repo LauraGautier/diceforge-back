@@ -2,8 +2,9 @@
 import "dotenv/config";
 
 // Importation des modules avec ES6
+import debug from "debug";
 import express from "express";
-import router from "./app/router/router.js";
+import router from "./app/routers/main.router.js";
 import session from "express-session";
 
 // Initialisation
