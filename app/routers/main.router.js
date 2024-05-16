@@ -7,9 +7,11 @@ import * as resetPasswordController from "../controllers/reset-password.controll
 
 const router = express.Router();
 
-router.post("/login", authController.login);
-router.post("/signup", signupController.createUser);
+router.post("/api/login", authController.login);
+router.post("/api/signup", signupController.createUser);
 router.post("/forgot-password", forgotPasswordController.requestPasswordReset);
 router.post("/reset-password", resetPasswordController.resetPassword);
+
+
 
 export default router;
