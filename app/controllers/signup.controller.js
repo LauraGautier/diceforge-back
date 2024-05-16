@@ -24,11 +24,11 @@ export const createUser = async (req, res) => {
    * - 500 in case of a server error.
    */
 
-    const { email, lastname, firstname, password, confirmPassword } = req.body;
+    const { lastname, firstname, email, password, confirmPassword } = req.body;
 
     // Validate the user data with zod
      try {
-        userSchema.parse({ firstname, lastname, password });
+        userSchema.parse({ lastname, firstname, password });
     } catch (e) {
         return res.status(400).json({ error: "Données invalides", details: e.errors });
     }
@@ -54,8 +54,9 @@ export const createUser = async (req, res) => {
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        await userDataMapper.createUser(email, lastname, firstname, hashedPassword);
+        await userDataMapper.createUser( lastname, firstname, email, hashedPassword);
         return res.status(201).json({ message: "Utilisateur créé" });
+
 
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
