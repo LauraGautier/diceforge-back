@@ -1,10 +1,12 @@
 import express from "express";
-import authRoutes from "./auth.router.js";
-import userRoutes from "./signup.router.js";
+import authRouter from "./auth.router.js";
+import userRouter from "./signup.router.js";
+import gameRouter from "./game.router.js";
 
 const router = express.Router();
 
-router.use("/api", authRoutes);
-router.use("/api", userRoutes);
+router.use("/api", authRouter);
+router.use("/api", userRouter);
+router.use("/api", gameRouter);
 
 export default router;
