@@ -1,8 +1,12 @@
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import UserDataMapper from '../datamappers/user.datamapper.js';
+import PasswordDataMapper from '../datamappers/password.datamapper.js';
+
 
 const userDataMapper = new UserDataMapper();
+const passwordDataMapper = new PasswordDataMapper();
+
 
 export const requestPasswordReset = async (req, res) => {
     /*
@@ -25,7 +29,7 @@ export const requestPasswordReset = async (req, res) => {
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiry = Date.now() + 3600000;
 
-        await userDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
+        await passwordDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
 
         const resetLink = `http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}`;
 
