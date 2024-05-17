@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import pool from '../../config/pg.client.js';
+import pool from '../../config/pg.config.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 import emailValidator from 'email-validator';
 import { userSchema } from '../validators/user.validator.js';

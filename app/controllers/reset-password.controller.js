@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import UserDataMapper from '../datamappers/user.datamapper.js';
+import PasswordDataMapper from '../datamappers/password.datamapper.js';
 
-const userDataMapper = new UserDataMapper();
+const passwordDataMapper = new PasswordDataMapper();
 
 export const resetPassword = async (req, res) => {
     /*
@@ -21,13 +21,13 @@ export const resetPassword = async (req, res) => {
     }
 
     try {
-        const user = await userDataMapper.findUserByResetToken(token);
+        const user = await passwordDataMapper.findUserByResetToken(token);
         if (!user || user.id !== parseInt(id, 10)) {
             return res.status(400).json({ error: "Jeton invalide ou expiré" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        await userDataMapper.updatePassword(user.id, hashedPassword);
+        await passwordDataMapper.updatePassword(user.id, hashedPassword);
 
         res.status(200).json({ message: "Mot de passe réinitialisé avec succès" });
     } catch (error) {

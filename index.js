@@ -2,19 +2,20 @@
 import "dotenv/config";
 
 // Importation des modules avec ES6
-import debug from "debug";
-import express from "express";
+import express from 'express';
+import { createServer } from "node:http";
+
 import router from "./app/routers/main.router.js";
 import session from "express-session";
 import cors from "cors";
 import corsOptions from "./config/cors.config.js";
+import setupSocket from "./config/socket.config.js"; 
 
-
-// Initialisation de l'application
 const app = express();
+const httpServer = createServer(app);
 const PORT = process.env.PORT || 5000;
 
-
+// Middleware pour parser les corps de requêtes
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -24,23 +25,23 @@ app.use(express.static("./public"));
 // Activation CORS
 app.use(cors(corsOptions));
 
+// Configuration des sessions
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 },
+    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }
   })
 );
 
+// Configuration de Socket.IO
+const io = setupSocket(httpServer);  // Utilisation de la fonction importée
+
+// Routes
 app.use(router);
 
-app.listen(PORT, () => {
-  debug(`Application lancée sur le port ${PORT}`);
+// Démarrage du serveur HTTP
+httpServer.listen(PORT, () => {
+  console.log(`Application lancée sur le port ${PORT}`);
 });
-
-
-
-
-
-

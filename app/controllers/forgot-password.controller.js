@@ -19,6 +19,17 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// Configuration du transporteur Nodemailer
+const transporter = nodemailer.createTransport({
+    host: 'smtp-mail.outlook.com',
+    port: 587,
+    secure: false, // false si vous utilisez STARTTLS
+    tls: { ciphers: 'SSLv3' },
+    auth: {
+        user: 'diceforgeteam@outlook.com',
+        pass: 'Bfljb1307'
+    }
+});
 export const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
 
@@ -33,7 +44,7 @@ export const requestPasswordReset = async (req, res) => {
         console.log('resetTokenExpiry:', resetTokenExpiry.toISOString());
         console.log('resetToken:', resetToken);
 
-        await userDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
+        await passwordDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
 
         const resetLink = `http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}`;
 
