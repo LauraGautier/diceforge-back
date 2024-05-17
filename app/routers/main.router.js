@@ -1,17 +1,10 @@
 import express from "express";
-import * as signupController from "../controllers/signup.controller.js";
-import * as authController from "../controllers/auth.controller.js";
-import * as forgotPasswordController from "../controllers/forgot-password.controller.js";
-import * as resetPasswordController from "../controllers/reset-password.controller.js";
-
+import authRoutes from "./auth.router.js";
+import userRoutes from "./signup.router.js";
 
 const router = express.Router();
 
-router.post("/api/login", authController.login);
-router.post("/api/signup", signupController.createUser);
-router.post("/forgot-password", forgotPasswordController.requestPasswordReset);
-router.post("/reset-password", resetPasswordController.resetPassword);
-
-
+router.use("/api", authRoutes);
+router.use("/api", userRoutes);
 
 export default router;
