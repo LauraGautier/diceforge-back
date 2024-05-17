@@ -31,6 +31,7 @@ CREATE TABLE "game" (
 
 CREATE TABLE "sheet" (
     id SERIAL NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
     image TEXT,
     class TEXT,
     level INT,
