@@ -1,23 +1,11 @@
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import UserDataMapper from '../datamappers/user.datamapper.js';
-import pool from '../../config/pg.client.js';
+import PasswordDataMapper from '../datamappers/password.datamapper.js'; // Importer PasswordDataMapper
+import pool from '../../config/pg.config.js';
 
 const userDataMapper = new UserDataMapper(pool);
-
-// Configuration du transporteur Nodemailer
-const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false, // false si vous utilisez STARTTLS
-    tls: {
-        ciphers: 'SSLv3'
-    },
-    auth: {
-        user: 'diceforgeteam@outlook.com',
-        pass: 'Bfljb1307'
-    }
-});
+const passwordDataMapper = new PasswordDataMapper(pool); // Créer une instance de PasswordDataMapper
 
 // Configuration du transporteur Nodemailer
 const transporter = nodemailer.createTransport({
@@ -30,24 +18,23 @@ const transporter = nodemailer.createTransport({
         pass: 'Bfljb1307'
     }
 });
+
 export const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
-
     try {
         const user = await userDataMapper.findUserByEmail(email);
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
-
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiry = new Date(Date.now() + 3600000);
         console.log('resetTokenExpiry:', resetTokenExpiry.toISOString());
         console.log('resetToken:', resetToken);
 
+        // Utilisation de passwordDataMapper pour définir le token de réinitialisation
         await passwordDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
 
         const resetLink = `http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}`;
-
         const mailOptions = {
             to: user.email,
             from: 'diceforgeteam@outlook.com',
