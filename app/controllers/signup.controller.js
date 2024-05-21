@@ -21,7 +21,7 @@ export const createUser = async (req, res) => {
    * - 400 if mandatory information is missing or if the passwords do not match.
    * - 409 if the email is already in use.
    * - 201 if the user is successfully created.
-   * - 500 in case of a server error.
+   * - 500 if an unexpected error occurs.
    */
 
     const { lastname, firstname, email, password, confirmPassword } = req.body;
@@ -50,15 +50,9 @@ export const createUser = async (req, res) => {
         return res.status(400).json({ error: "Les mots de passe ne correspondent pas" });
     }
 
-    try {
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        await userDataMapper.createUser( lastname, firstname, email, hashedPassword);
-        return res.status(201).json({ message: "Utilisateur créé" });
-
-
-    } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
-    }
+    await userDataMapper.createUser( lastname, firstname, email, hashedPassword);
+    return res.status(201).json({ message: "Utilisateur créé" });
 }

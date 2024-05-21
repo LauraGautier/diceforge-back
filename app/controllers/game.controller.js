@@ -14,19 +14,15 @@ export const getGame = async (req, res) => {
  * If the game is found, it sends a 200 OK response with the game data.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const id = req.params.id;
-        const game = await gameDataMapper.findGameById(id);
+    const id = req.params.id;
+    const game = await gameDataMapper.findGameById(id);
 
-        if (!game) {
-            return res.status(404).json({ error: "La partie n'existe pas." });
-        }
-
-        return res.status(200).json(game);
-    } catch (error) {
-        console.error('Erreur lors de la récupération de la partie :', error);
-        res.status(500).json({ error: "Erreur lors de la récupération de la partie." });
+    if (!game) {
+        return res.status(404).json({ error: "La partie n'existe pas." });
     }
+
+    return res.status(200).json(game);
+    
 }
 
 export const createGame = async (req, res) => {
@@ -39,20 +35,15 @@ export const createGame = async (req, res) => {
  * If the game is successfully created, it sends a 201 Created response with the game data.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const game = req.body;
-        const userId = req.session.userId;
-        if (!userId) {
-            return res.status(401).json({ error: 'Utilisateur non connecté.' });
-        }
-
-        const createdGame = await gameDataMapper.createGame(game, userId);
-
-        res.status(201).json(createdGame);
-    } catch (error) {
-        console.error('Erreur lors de la création de la partie :', error);
-        res.status(500).json({ error: "Erreur lors de la création de la partie." });
+    const game = req.body;
+    const userId = req.session.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'Utilisateur non connecté.' });
     }
+
+    const createdGame = await gameDataMapper.createGame(game, userId);
+
+    res.status(201).json(createdGame);
 }
 
 export const updateGame = async (req, res) => {
@@ -66,25 +57,19 @@ export const updateGame = async (req, res) => {
      * If the game is not found, it sends a 404 Not Found response with an appropriate error message.
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      */
+    const game = {
+        id: req.params.id,
+        name: req.body.name,
+        music: req.body.music,
+        note: req.body.note,
+        event: req.body.event
+    };
 
-    try {
-        const game = {
-            id: req.params.id,
-            name: req.body.name,
-            music: req.body.music,
-            note: req.body.note,
-            event: req.body.event
-        };
-
-        const updatedGame = await gameDataMapper.updateGame(game);
-        if (!updatedGame) {
-            return res.status(404).json({ message: "la partie n'a pas été trouvé" });
-        }
-        res.status(200).json(updatedGame);
-    } catch (error) {
-        console.error("Erreur lors de la mise à jour de la partie :", error);
-        res.status(500).json({ message: "Internal Server Error" });
+    const updatedGame = await gameDataMapper.updateGame(game);
+    if (!updatedGame) {
+        return res.status(404).json({ message: "la partie n'a pas été trouvé" });
     }
+    res.status(200).json(updatedGame);
 };
 
 export const deleteGame = async (req, res) => {
@@ -97,13 +82,8 @@ export const deleteGame = async (req, res) => {
  * If the game is successfully deleted, it sends a 204 No Content response.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const id = req.params.id;
-        await gameDataMapper.deleteGame(id);
+    const id = req.params.id;
+    await gameDataMapper.deleteGame(id);
 
-        res.status(204).send();
-    } catch (error) {
-        console.error('Erreur lors de la suppression de la partie :', error);
-        res.status(500).json({ error: "Erreur lors de la suppression de la partie." });
-    }
+    res.status(204).send();
 }

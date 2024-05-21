@@ -14,19 +14,13 @@ export const getSheet = async (req, res) => {
      * If the sheet is not found, it sends a 404 Not Found response with an appropriate error message.
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      */
-    try {
-        const name = req.params.name;
-        const sheet = await sheetDataMapper.findSheetByName(name);
+    const name = req.params.name;
+    const sheet = await sheetDataMapper.findSheetByName(name);
 
-        if (!sheet) {
-            return res.status(404).json({ error: "La fiche n'existe pas." });
-        }
-
-        return res.status(200).json(sheet);
-    } catch (error) {
-        console.error('Erreur lors de la récupération de la fiche :', error);
-        res.status(500).json({ error: "Erreur lors de la récupération de la fiche." });
+    if (!sheet) {
+        return res.status(404).json({ error: "La fiche n'existe pas." });
     }
+    return res.status(200).json(sheet);
 };
 
 export const createSheet = async (req, res) => {
@@ -39,15 +33,10 @@ export const createSheet = async (req, res) => {
  * If the sheet is successfully created, it sends a 201 Created response with the created sheet data.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const sheet = req.body;
-        const createdSheet = await sheetDataMapper.createSheet(sheet);
+    const sheet = req.body;
+    const createdSheet = await sheetDataMapper.createSheet(sheet);
 
-        res.status(201).json(createdSheet);
-    } catch (error) {
-        console.error('Erreur lors de la création de la fiche :', error);
-        res.status(500).json({ error: "Erreur lors de la création de la fiche." });
-    }
+    res.status(201).json(createdSheet)
 }
 
 export const updateSheet = async (req, res) => {
@@ -61,21 +50,16 @@ export const updateSheet = async (req, res) => {
      * If the sheet is not found, it sends a 404 Not Found response with an appropriate error message.
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      */
-    try {
-        const name = req.params.name;
-        const { image, class: className, level } = req.body; // we use alias to avoid conflict with reserved keyword 'class'
+    const name = req.params.name;
+    const { image, class: className, level } = req.body; // we use alias to avoid conflict with reserved keyword 'class'
 
-        const updatedSheet = await sheetDataMapper.updateSheetByName({ name, image, class: className, level });
+    const updatedSheet = await sheetDataMapper.updateSheetByName({ name, image, class: className, level });
 
-        if (!updatedSheet) {
-            return res.status(404).json({ error: "La fiche n'a pas été trouvée." });
-        }
-
-        res.status(200).json(updatedSheet);
-    } catch (error) {
-        console.error("Erreur lors de la mise à jour de la fiche :", error);
-        res.status(500).json({ error: "Erreur lors de la mise à jour de la fiche." });
+    if (!updatedSheet) {
+        return res.status(404).json({ error: "La fiche n'a pas été trouvée." });
     }
+
+    res.status(200).json(updatedSheet);
 };
 
 
@@ -89,13 +73,8 @@ export const deleteSheet = async (req, res) => {
  * If the sheet is successfully deleted, it sends a 204 No Content response.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const id = req.params.id;
-        await sheetDataMapper.deleteSheet(id);
+    const id = req.params.id;
+    await sheetDataMapper.deleteSheet(id);
 
-        res.status(204).send();
-    } catch (error) {
-        console.error('Erreur lors de la suppression de la fiche :', error);
-        res.status(500).json({ error: "Erreur lors de la suppression de la fiche." });
-    }
+    res.status(204).send();
 }

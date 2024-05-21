@@ -12,24 +12,21 @@ const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
     secure: false, // false si vous utilisez STARTTLS
-    tls: { ciphers: 'SSLv3' },
+    tls: { ciphers: 'TLSv1.3', rejectUnauthorized: true },
     auth: {
-        user: 'diceforgeteam@outlook.com',
-        pass: 'Bfljb1307'
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
 export const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
-    try {
         const user = await userDataMapper.findUserByEmail(email);
         if (!user) {
             return res.status(404).json({ error: "Utilisateur non trouvé" });
         }
         const resetToken = crypto.randomBytes(32).toString('hex');
         const resetTokenExpiry = new Date(Date.now() + 3600000);
-        console.log('resetTokenExpiry:', resetTokenExpiry.toISOString());
-        console.log('resetToken:', resetToken);
 
         // Utilisation de passwordDataMapper pour définir le token de réinitialisation
         await passwordDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
@@ -51,8 +48,4 @@ export const requestPasswordReset = async (req, res) => {
             }
             res.status(200).json({ message: "Email de réinitialisation envoyé" });
         });
-    } catch (error) {
-        console.error('Erreur serveur:', error);
-        res.status(500).json({ error: "Erreur serveur" });
-    }
 };

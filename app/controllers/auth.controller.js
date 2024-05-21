@@ -16,23 +16,19 @@ export const login = async (req, res) => {
  * If the login is successful, it sends a 200 OK for authentication.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
-    try {
-        const { email, password } = req.body;
-        const user = await userDataMapper.findUserByEmail(email);
+    const { email, password } = req.body;
+    const user = await userDataMapper.findUserByEmail(email);
 
-        if (!user) {
-            return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
-        }
-        
-        req.session.userId = user.id;
-        return res.status(200).json({ message: "Authentification réussie" }), userDataMapper.findUserByEmail(email);
-    } catch (error) {
-        console.error('Erreur lors de la connexion :', error);
-        res.status(500).json({ error: "Erreur lors de la connexion." });
+    if (!user) {
+        return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
+    }
+    
+    req.session.userId = user.id;
+    return res.status(200).json({ message: "Authentification réussie" }), userDataMapper.findUserByEmail(email);
+    
 };

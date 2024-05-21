@@ -14,13 +14,9 @@ export const getProfile = async (req, res) => {
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      * 
      */
-    try {
-        const profile = await profileDataMapper.getProfile();
-        res.status(200).json(profile);
-    } catch (error) {
-        console.error('Erreur lors de la récupération du profil :', error);
-        res.status(500).json({ error: "Erreur lors de la récupération du profil." });
-    }
+    const profile = await profileDataMapper.getProfile();
+    res.status(200).json(profile);
+ 
 }
 
 export const updateProfile = async (req, res) => {
@@ -34,12 +30,7 @@ export const updateProfile = async (req, res) => {
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      * 
      */
-    try {
-        const profile = req.body;
-        const updatedProfile = await profileDataMapper.updateProfile(profile);
-        res.status(200).json(updatedProfile);
-    } catch (error) {
-        console.error('Erreur lors de la mise à jour du profil :', error);
-        res.status(500).json({ error: "Erreur lors de la mise à jour du profil." });
-    }
+    const profile = req.body;
+    const updatedProfile = await profileDataMapper.updateProfile(profile);
+    res.status(200).json(updatedProfile);
 }

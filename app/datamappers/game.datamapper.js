@@ -21,7 +21,6 @@ class GameDataMapper {
             await this.pool.query(playQuery, [role, userId, newGame.id]);
 
             return newGame;
-
     }
     
     async updateGame(game) {
