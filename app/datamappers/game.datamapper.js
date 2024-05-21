@@ -11,12 +11,19 @@ class GameDataMapper {
         return result.rows[0] || null;
     }
 
-    async createGame(game) {
-        const query = 'INSERT INTO game (name, music, note, event) VALUES ($1, $2, $3, $4) RETURNING *';
-        const result = await this.pool.query(query, [game.name, game.music, game.note, game.event]);
-        return result.rows[0];
-    }
+    async createGame(game, userId) {
+         const gameQuery = 'INSERT INTO game (name, music, note, event) VALUES ($1, $2, $3, $4) RETURNING *';
+            const gameResult = await this.pool.query(gameQuery, [game.name, game.music, game.note, game.event]);
+            const newGame = gameResult.rows[0];
 
+            const role = 'gm';
+            const playQuery = 'INSERT INTO play (role, user_id, game_id) VALUES ($1, $2, $3)';
+            await this.pool.query(playQuery, [role, userId, newGame.id]);
+
+            return newGame;
+
+    }
+    
     async updateGame(game) {
         const fields = [];
         const values = [];
