@@ -28,7 +28,7 @@ export const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
         }
-        return res.status(200).json({ message: "Authentification réussie." });
+        return res.status(200).json({ message: "Authentification réussie" }), userDataMapper.findUserByEmail(email);
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         res.status(500).json({ error: "Erreur lors de la connexion." });
