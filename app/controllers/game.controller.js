@@ -41,7 +41,12 @@ export const createGame = async (req, res) => {
  */
     try {
         const game = req.body;
-        const createdGame = await gameDataMapper.createGame(game);
+        const userId = req.session.userId;
+        if (!userId) {
+            return res.status(401).json({ error: 'Utilisateur non connecté.' });
+        }
+
+        const createdGame = await gameDataMapper.createGame(game, userId);
 
         res.status(201).json(createdGame);
     } catch (error) {

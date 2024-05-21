@@ -16,7 +16,7 @@ class GameDataMapper {
             const gameResult = await this.pool.query(gameQuery, [game.name, game.music, game.note, game.event]);
             const newGame = gameResult.rows[0];
 
-            const role = 'gm';
+            const role = 'gameMaster';
             const playQuery = 'INSERT INTO play (role, user_id, game_id) VALUES ($1, $2, $3)';
             await this.pool.query(playQuery, [role, userId, newGame.id]);
 
