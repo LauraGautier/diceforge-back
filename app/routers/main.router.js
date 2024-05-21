@@ -4,13 +4,14 @@ import userRouter from "./signup.router.js";
 import gameRouter from "./game.router.js";
 import sheetRouter from "./sheet.router.js";
 import profileRouter from "./profile.router.js";
+import isLoggedIn from "../middlewares/isLogin.middleware.js";
 
 const router = express.Router();
 
 router.use("/api", authRouter);
 router.use("/api", userRouter);
-router.use("/api", gameRouter);
-router.use("/api", sheetRouter);
-router.use("/api", profileRouter);  
+router.use("/api", isLoggedIn, gameRouter);
+router.use("/api", isLoggedIn, sheetRouter);
+router.use("/api", isLoggedIn, profileRouter);  
 
 export default router;
