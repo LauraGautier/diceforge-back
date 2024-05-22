@@ -4,7 +4,7 @@ BEGIN;
 
 INSERT INTO "license" (name)
 VALUES 
-('Donjon and Dragon'), 
+('Donjon et dragon'), 
 ('Cthulhu'), 
 ('Warhammer'),
 ('Libre');

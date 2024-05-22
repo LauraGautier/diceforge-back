@@ -4,7 +4,7 @@ DROP TABLE IF EXISTS "play", "contain", "possesses", "characterize", "object", "
 
 CREATE TABLE "license" (
     id SERIAL NOT NULL PRIMARY KEY,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ 
 );
@@ -26,7 +26,7 @@ CREATE TABLE "game" (
     music TEXT,
     note TEXT,
     event TIMESTAMPTZ,
-    license_name INTEGER REFERENCES "license"(name),
+    license_name TEXT REFERENCES "license"(name),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ 
 );
