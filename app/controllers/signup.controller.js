@@ -23,7 +23,6 @@ export const createUser = async (req, res) => {
    * - 201 if the user is successfully created.
    * - 500 if an unexpected error occurs.
    */
-
     const { lastname, firstname, email, password, confirmPassword } = req.body;
 
     // Validate the user data with zod

@@ -12,14 +12,14 @@ class GameDataMapper {
     }
 
     async createGame(game, userId) {
-         const gameQuery = 'INSERT INTO game (name, music, note, event) VALUES ($1, $2, $3, $4) RETURNING *';
-            const gameResult = await this.pool.query(gameQuery, [game.name, game.music, game.note, game.event]);
+         const gameQuery = 'INSERT INTO game (name, music, note, event, license_id) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+            const gameResult = await this.pool.query(gameQuery, [game.name, game.music, game.note, game.event, game.license_id]);
             const newGame = gameResult.rows[0];
 
             const role = 'gameMaster';
             const playQuery = 'INSERT INTO play (role, user_id, game_id) VALUES ($1, $2, $3)';
             await this.pool.query(playQuery, [role, userId, newGame.id]);
-
+            
             return newGame;
     }
     

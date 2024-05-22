@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
     secure: false, // false si vous utilisez STARTTLS
-    tls: { ciphers: 'TLSv1.3', rejectUnauthorized: true },
+    tls: { ciphers: 'TLSv1.2', rejectUnauthorized: true },
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS

@@ -4,7 +4,9 @@ DROP TABLE IF EXISTS "play", "contain", "possesses", "characterize", "object", "
 
 CREATE TABLE "license" (
     id SERIAL NOT NULL PRIMARY KEY,
-    name TEXT
+    name TEXT NOT NULL DEFAULT 'libre',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ 
 );
 
 CREATE TABLE "user" (

@@ -35,6 +35,7 @@ export const createGame = async (req, res) => {
  * If the game is successfully created, it sends a 201 Created response with the game data.
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
+    console.log('req.session.userId', req.session.userId);
     const game = req.body;
     const userId = req.session.userId;
     if (!userId) {
@@ -42,7 +43,7 @@ export const createGame = async (req, res) => {
     }
 
     const createdGame = await gameDataMapper.createGame(game, userId);
-
+    console.log('createdGame', createdGame);
     res.status(201).json(createdGame);
 }
 
