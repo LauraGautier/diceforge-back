@@ -12,15 +12,40 @@ class GameDataMapper {
     }
 
     async createGame(game, userId) {
-         const gameQuery = 'INSERT INTO game (name, music, note, event, license_name) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-            const gameResult = await this.pool.query(gameQuery, [game.name, game.music, game.note, game.event, game.license_id]);
+        const client = await this.pool.connect();
+        try {
+            await client.query('BEGIN');
+
+            const gameQuery = `
+                INSERT INTO game (name, music, note, event, license_name) 
+                VALUES ($1, $2, $3, $4, $5) 
+                RETURNING *;
+            `;
+            const gameResult = await client.query(gameQuery, [
+                game.name, 
+                game.music, 
+                game.note, 
+                game.event, 
+                game.license_name
+            ]);
             const newGame = gameResult.rows[0];
 
             const role = 'gameMaster';
-            const playQuery = 'INSERT INTO play (role, user_id, game_id) VALUES ($1, $2, $3)';
-            await this.pool.query(playQuery, [role, userId, newGame.id]);
-            
+            const playQuery = `
+                INSERT INTO play (role, user_id, game_id) 
+                VALUES ($1, $2, $3);
+            `;
+            await client.query(playQuery, [role, userId, newGame.id]);
+
+            await client.query('COMMIT');
             return newGame;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();   // Release the client back to the pool for no saturation
+
+        }
     }
     
     async updateGame(game) {
