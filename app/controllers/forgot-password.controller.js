@@ -48,4 +48,12 @@ export const requestPasswordReset = async (req, res) => {
             }
             res.status(200).json({ message: "Email de réinitialisation envoyé" });
         });
+<<<<<<< Updated upstream
 };
+=======
+    } catch (error) {
+        res.status(500).json({ error: "Erreur serveur" });
+    }
+};
+
+>>>>>>> Stashed changes
