@@ -1,7 +1,9 @@
 import pool from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
+import LicenseDataMapper from '../datamappers/license.datamapper.js';
 
 const gameDataMapper = new GameDataMapper(pool);
+const licenseDataMapper = new LicenseDataMapper(pool);
 
 export const getGame = async (req, res) => {
     /**
@@ -41,10 +43,10 @@ export const createGame = async (req, res) => {
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
     }
-
+    const license = await licenseDataMapper.findLicenseByName(game.license);
     const createdGame = await gameDataMapper.createGame(game, userId);
     console.log('createdGame', createdGame);
-    res.status(201).json(createdGame);
+    res.status(201).json(createdGame, license);
 }
 
 export const updateGame = async (req, res) => {
