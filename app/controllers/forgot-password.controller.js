@@ -31,7 +31,7 @@ export const requestPasswordReset = async (req, res) => {
     // Utilisation de passwordDataMapper pour définir le token de réinitialisation
     await passwordDataMapper.setPasswordResetToken(user.id, resetToken, resetTokenExpiry);
 
-    const resetLink = `http://localhost:5000/api/reset-password?token=${resetToken}&id=${user.id}`;
+    const resetLink = `http://localhost:5173/api/reset-password?token=${resetToken}&id=${user.id}`;
     const mailOptions = {
         to: user.email,
         from: 'diceforgeteam@outlook.com',
