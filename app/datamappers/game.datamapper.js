@@ -44,7 +44,6 @@ class GameDataMapper {
             throw error;
         } finally {
             client.release();   // Release the client back to the pool for no saturation
-
         }
     }
     
