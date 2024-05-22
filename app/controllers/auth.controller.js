@@ -29,6 +29,11 @@ export const login = async (req, res) => {
     }
     
     req.session.userId = user.id;
-    return res.status(200).json({ message: "Authentification réussie" }), userDataMapper.findUserByEmail(email);
+    return res.status(200).json({ message: "Authentification réussie", user:{
+        id: user.id,
+        image: user.image,
+        firstname: user.firstname,
+        lastname: user.lastname,
+    } }), userDataMapper.findUserByEmail(email);
     
 };
