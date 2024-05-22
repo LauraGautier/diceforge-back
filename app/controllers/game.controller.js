@@ -29,25 +29,34 @@ export const getGame = async (req, res) => {
 
 export const createGame = async (req, res) => {
     /**
- * Handles game creation.
- *
- * @description
- * This function handles the creation of a new game.
- * It extracts the game data from the request body, then attempts to create the game in the database.
- * If the game is successfully created, it sends a 201 Created response with the game data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
-    console.log('req.session.userId', req.session.userId);
+     * Handles game creation.
+     *
+     * @description
+     * This function handles the creation of a new game.
+     * It extracts the game data from the request body, then attempts to create the game in the database.
+     * If the game is successfully created, it sends a 201 Created response with the game data.
+     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+     */
     const game = req.body;
     const userId = req.session.userId;
+
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
     }
-    const license = await licenseDataMapper.findLicenseByName(game.license);
-    const createdGame = await gameDataMapper.createGame(game, userId);
-    console.log('createdGame', createdGame);
-    res.status(201).json(createdGame, license);
-}
+
+    try {
+        const license = await licenseDataMapper.findLicenseByName(game.license_name);
+        if (!license) {
+            return res.status(400).json({ error: 'Licence non trouvée.' });
+        }
+
+        const createdGame = await gameDataMapper.createGame(game, userId);
+        return res.status(201).json(createdGame);
+    } catch (error) {
+        console.error('Error creating game:', error);
+        return res.status(500).json({ error: 'Erreur interne du serveur.' });
+    }
+};
 
 export const updateGame = async (req, res) => {
     /**

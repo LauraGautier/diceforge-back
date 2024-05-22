@@ -5,12 +5,13 @@ import gameRouter from "./game.router.js";
 import sheetRouter from "./sheet.router.js";
 import profileRouter from "./profile.router.js";
 import isLoggedIn from "../middlewares/isLogin.middleware.js";
-import cw from "../middlewares/controllerWrapper.middleware.js";
+import licenseRouter from "./license.router.js";
 
 const router = express.Router();
 
 router.use("/api", authRouter);
 router.use("/api", userRouter);
+router.use("/api", licenseRouter);
 router.use("/api", isLoggedIn, gameRouter);
 router.use("/api", isLoggedIn, sheetRouter);
 router.use("/api", isLoggedIn, profileRouter);  
