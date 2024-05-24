@@ -14,13 +14,13 @@ const jwtAuthMiddleware = (req, res, next) => {
         return res.status(401).json({ error: 'Token manquant' });
     }
 
-    try {
-        const decodedToken = jwt.verify(token, jwtConfig.secretKey);
-        req.userData = decodedToken;
-        next();
-    } catch (error) {
-        return res.status(401).json({ error: 'Token invalide' });
-    }
+    const decodedToken = jwt.verify(token, jwtConfig.secretKey, {
+        algorithms: ["HS256"], // Algorithme de signature
+        maxAge: jwtConfig.options.expiresIn, // Durée de vie du token
+    });
+
+    req.userData = decodedToken;
+    next();
 };
 
 export default jwtAuthMiddleware;
