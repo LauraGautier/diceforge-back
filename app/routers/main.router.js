@@ -8,10 +8,10 @@ import isLoggedIn from "../middlewares/isLogin.middleware.js";
 
 const router = express.Router();
 
-router.use("/api", authRouter);
-router.use("/api", userRouter);
-router.use("/api", isLoggedIn, gameRouter);
-router.use("/api", isLoggedIn, sheetRouter);
-router.use("/api", isLoggedIn, profileRouter);
+router.use("/api", (authRouter));
+router.use("/api", (userRouter));
+router.use("/api", (isLoggedIn, gameRouter));
+router.use("/api", (isLoggedIn, sheetRouter));
+router.use("/api", (isLoggedIn, profileRouter));
 
 export default router;
