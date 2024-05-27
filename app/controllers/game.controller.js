@@ -24,7 +24,7 @@ export const getGame = async (req, res) => {
     }
 
     return res.status(200).json(game);
-    
+
 }
 
 export const createGame = async (req, res) => {
@@ -38,7 +38,7 @@ export const createGame = async (req, res) => {
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      */
     const game = req.body;
-    const userId = req.session.userId;
+    const userId = req.userData.id;
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
