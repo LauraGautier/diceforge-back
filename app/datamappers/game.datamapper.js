@@ -11,6 +11,17 @@ class GameDataMapper {
         return result.rows[0] || null;
     }
 
+    async findGamesByUserId(userId) {
+        const query = ` 
+            SELECT game.*
+            FROM game
+            JOIN play ON game.id = play.game_id
+            WHERE play.user_id = $1
+            `;
+        const result = await this.pool.query(query, [userId]);
+        return result.rows;
+    }
+
     async createGame(game, userId) {
         const client = await this.pool.connect();
         try {
