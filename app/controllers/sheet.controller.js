@@ -1,4 +1,4 @@
-import pool from '../../config/pg.config.js';
+ import pool from '../../config/pg.config.js';
 import SheetDataMapper from '../datamappers/sheet.datamapper.js';
 
 const sheetDataMapper = new SheetDataMapper(pool);

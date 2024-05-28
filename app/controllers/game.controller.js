@@ -24,7 +24,7 @@ export const getGame = async (req, res) => {
     }
 
     return res.status(200).json(game);
-    
+
 }
 
 export const createGame = async (req, res) => {
@@ -38,7 +38,7 @@ export const createGame = async (req, res) => {
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
      */
     const game = req.body;
-    const userId = req.session.userId;
+    const userId = req.userData.id;
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
@@ -99,3 +99,25 @@ export const deleteGame = async (req, res) => {
 
     res.status(204).send();
 }
+
+export const findGamesByUserId = async (req, res) => {
+    /**
+ * Handles games retrieval by user ID.
+ *
+ * @description
+ * This function handles the localization of games by user id.
+ * It extracts the user id from the request parameters, then attempts to find the games in the database
+ * based on the provided id. If the games do not exist, it sends a 404 Not Found response with an appropriate error message.
+ * If the games are found, it sends a 200 OK response with the games data.
+ * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+ */
+    const userId = req.params.id;
+    if (!userId) {
+        return res.status(400).json({ error: "User ID is required." });
+    }
+
+    const games = await gameDataMapper.findGamesByUserId(userId);
+    
+    return res.status(200).json(games);
+}
+

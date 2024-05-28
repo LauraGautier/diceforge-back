@@ -11,6 +11,17 @@ class GameDataMapper {
         return result.rows[0] || null;
     }
 
+    async findGamesByUserId(userId) {
+        const query = ` 
+            SELECT game.*
+            FROM game
+            JOIN play ON game.id = play.game_id
+            WHERE play.user_id = $1
+            `;
+        const result = await this.pool.query(query, [userId]);
+        return result.rows;
+    }
+
     async createGame(game, userId) {
         const client = await this.pool.connect();
         try {
@@ -85,9 +96,27 @@ class GameDataMapper {
     }
 
     async deleteGame(id) {
-        const query = 'DELETE FROM game WHERE id = $1';
-        await this.pool.query(query, [id]);
+        const deletePlayQuery = 'DELETE FROM play WHERE game_id = $1';
+        const deleteGameQuery = 'DELETE FROM game WHERE id = $1';
+
+        const client = await this.pool.connect();
+
+        try {
+            await client.query('BEGIN'); 
+
+            await client.query(deletePlayQuery, [id]);
+
+            await client.query(deleteGameQuery, [id]);
+
+            await client.query('COMMIT'); 
+        } catch (err) {
+            await client.query('ROLLBACK'); 
+            throw err; 
+        } finally {
+            client.release(); 
+        }
     }
+
 }
 
 export default GameDataMapper;
