@@ -96,11 +96,27 @@ class GameDataMapper {
     }
 
     async deleteGame(id) {
-        const deletePlayQuery = 'DELETE FROM play WHERE game_id = $1'; 
-        const deleteGameQuery = 'DELETE FROM game WHERE id = $1'; 
-        await this.pool.query(deletePlayQuery, [id]);
-        await this.pool.query(deleteGameQuery, [id]);
+        const deletePlayQuery = 'DELETE FROM play WHERE game_id = $1';
+        const deleteGameQuery = 'DELETE FROM game WHERE id = $1';
+
+        const client = await this.pool.connect();
+
+        try {
+            await client.query('BEGIN'); 
+
+            await client.query(deletePlayQuery, [id]);
+
+            await client.query(deleteGameQuery, [id]);
+
+            await client.query('COMMIT'); 
+        } catch (err) {
+            await client.query('ROLLBACK'); 
+            throw err; 
+        } finally {
+            client.release(); 
+        }
     }
+
 }
 
 export default GameDataMapper;
