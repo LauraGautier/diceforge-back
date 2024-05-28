@@ -100,7 +100,7 @@ export const deleteGame = async (req, res) => {
     res.status(204).send();
 }
 
-export const getGamesById = async (req, res) => {
+export const findGamesByUserId = async (req, res) => {
     /**
  * Handles games retrieval by user ID.
  *
@@ -112,10 +112,14 @@ export const getGamesById = async (req, res) => {
  * In case of any unexpected errors, it sends a 500 Internal Server Error response.
  */
     const userId = req.params.id;
-    const games = await gameDataMapper.findGamesByUserId(userId);
+    if (!userId) {
+        return res.status(400).json({ error: "User ID is required." });
+    }
 
-    if (!games) {
+    const games = await gameDataMapper.findGamesByUserId(userId);
+    if (!games || games.length === 0) {
         return res.status(404).json({ error: "Aucune partie trouvée." });
     }
+    
     return res.status(200).json(games);
 }
