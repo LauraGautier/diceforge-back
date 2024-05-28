@@ -96,8 +96,10 @@ class GameDataMapper {
     }
 
     async deleteGame(id) {
-        const query = 'DELETE FROM game WHERE id = $1';
-        await this.pool.query(query, [id]);
+        const deletePlayQuery = 'DELETE FROM play WHERE game_id = $1'; 
+        const deleteGameQuery = 'DELETE FROM game WHERE id = $1'; 
+        await this.pool.query(deletePlayQuery, [id]);
+        await this.pool.query(deleteGameQuery, [id]);
     }
 }
 
