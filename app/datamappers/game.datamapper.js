@@ -28,8 +28,8 @@ class GameDataMapper {
             await client.query('BEGIN');
 
             const gameQuery = `
-                INSERT INTO game (name, music, note, event, license_name) 
-                VALUES ($1, $2, $3, $4, $5) 
+                INSERT INTO game (name, music, note, event, license_name, invitation_token) 
+                VALUES ($1, $2, $3, $4, $5, $6) 
                 RETURNING *;
             `;
             const gameResult = await client.query(gameQuery, [
@@ -37,7 +37,8 @@ class GameDataMapper {
                 game.music, 
                 game.note, 
                 game.event, 
-                game.license_name
+                game.license_name,
+                game.invitation_token
             ]);
             const newGame = gameResult.rows[0];
 
@@ -47,7 +48,7 @@ class GameDataMapper {
                 VALUES ($1, $2, $3);
             `;
             await client.query(playQuery, [role, userId, newGame.id]);
-
+            
             await client.query('COMMIT');
             return newGame;
         } catch (error) {

@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import pool from '../../config/pg.config.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
-import { generateAccessToken, generateRefreshToken } from '../utils/authUtils.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/auth.util.js';
 
 const userDataMapper = new UserDataMapper(pool);
 

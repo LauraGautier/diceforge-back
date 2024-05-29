@@ -1,23 +1,14 @@
 import crypto from 'crypto';
-import nodemailer from 'nodemailer';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 import PasswordDataMapper from '../datamappers/password.datamapper.js'; // Importer PasswordDataMapper
 import pool from '../../config/pg.config.js';
+import transporter from '../../config/nodemailer.config.js';
 
 const userDataMapper = new UserDataMapper(pool);
 const passwordDataMapper = new PasswordDataMapper(pool); // Créer une instance de PasswordDataMapper
 
 // Configuration du transporteur Nodemailer
-const transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    port: 587,
-    secure: false, // false si vous utilisez STARTTLS
-    tls: { ciphers: 'TLSv1.2', rejectUnauthorized: true },
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
+
 
 export const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
