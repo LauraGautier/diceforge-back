@@ -1,11 +1,10 @@
 import pool from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
-import sendInvitationEmail from '../../config/nodemailer.config.js';
+import { sendInvitationEmail } from '../../config/nodemailer.config.js';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
-
 
 
 export const getGame = async (req, res) => {
@@ -42,6 +41,7 @@ export const createGame = async (req, res) => {
      */
 const game = req.body;
     const userId = req.userData.id;
+    const userEmail = req.userData.email;
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
@@ -59,7 +59,13 @@ const game = req.body;
         }
 
         const createdGame = await gameDataMapper.createGame(game, userId);
+        const userEmails = await gameDataMapper.findAllUserEmail(userEmail);
 
+        if (userEmails && userEmails.length > 0) {
+            for (const email of userEmails) {
+                await sendInvitationEmail(email, createdGame.id);
+            }
+        }
         return res.status(201).json(createdGame);
         
     } catch (error) {

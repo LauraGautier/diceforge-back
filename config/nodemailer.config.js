@@ -26,7 +26,7 @@ const sendInvitationEmail = async (email, gameId) => {
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: email,
+        to: "",
         subject: 'Come on and play with us!',
         text: `Clic sur l'invitation: ${invitationLink}`,
         html: `<p>Clic ici pour rejoindre la game: <a href="${invitationLink}">${invitationLink}</a></p>`
@@ -41,4 +41,4 @@ const sendInvitationEmail = async (email, gameId) => {
     }
 };
 
-export default { sendInvitationEmail, generateInvitationToken, transporter };
+export { sendInvitationEmail, generateInvitationToken, transporter };

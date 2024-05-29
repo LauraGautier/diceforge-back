@@ -22,6 +22,12 @@ class GameDataMapper {
         return result.rows;
     }
 
+    async findAllUserEmail(email) {
+        const query = 'SELECT * FROM "user" WHERE email = $1';
+        const result = await this.pool.query(query, [email]);
+        return result.rows;
+    }
+
     async createGame(game, userId) {
         const client = await this.pool.connect();
         try {

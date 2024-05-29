@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 import PasswordDataMapper from '../datamappers/password.datamapper.js'; // Importer PasswordDataMapper
 import pool from '../../config/pg.config.js';
-import transporter from '../../config/nodemailer.config.js';
+import { transporter } from '../../config/nodemailer.config.js';
 
 const userDataMapper = new UserDataMapper(pool);
 const passwordDataMapper = new PasswordDataMapper(pool); // Créer une instance de PasswordDataMapper
