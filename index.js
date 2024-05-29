@@ -10,6 +10,7 @@ import session from "express-session";
 import cors from "cors";
 import corsOptions from "./config/cors.config.js";
 import setupSocket from "./config/socket.config.js"; 
+import errorHandler from "./app/middlewares/errorHandler.middleware.js";
 
 const app = express();
 const httpServer = createServer(app);
@@ -40,6 +41,8 @@ const io = setupSocket(httpServer);  // Utilisation de la fonction importée
 
 // Routes
 app.use(router);
+
+app.use(errorHandler);
 
 // Démarrage du serveur HTTP
 httpServer.listen(PORT, () => {

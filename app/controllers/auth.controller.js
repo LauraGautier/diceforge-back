@@ -1,36 +1,38 @@
 import bcrypt from 'bcryptjs';
 import pool from '../../config/pg.config.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/authUtils.js';
 
 const userDataMapper = new UserDataMapper(pool);
 
 export const login = async (req, res) => {
-    /**
- * Handles user login.
- *
- * @description
- * This function handles user login by verifying the provided login credentials.
- * It extracts the email and password from the request body, then attempts to find the user in the database
- * based on the provided email. If the user does not exist or if the password is incorrect,
- * it sends a 401 Unauthorized response with an appropriate error message.
- * If the login is successful, it sends a 200 OK for authentication.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
-    try {
-        const { email, password } = req.body;
-        const user = await userDataMapper.findUserByEmail(email);
+    // Fonction de gestion de la connexion utilisateur
+    const { email, password } = req.body; // Extraction de l'email et du mot de passe à partir du corps de la requête
+    const user = await userDataMapper.findUserByEmail(email); // Recherche de l'utilisateur dans la base de données par son email
 
-        if (!user) {
-            return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe incorrect." });
-        }
-        return res.status(200).json({ message: "Authentification réussie." });
-    } catch (error) {
-        console.error('Erreur lors de la connexion :', error);
-        res.status(500).json({ error: "Erreur lors de la connexion." });
+    if (!user) {
+        // Si l'utilisateur n'existe pas, renvoyer une erreur 401 Unauthorized
+        return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password); // Vérification du mot de passe haché
+    if (!isPasswordValid) {
+        // Si le mot de passe est incorrect, renvoyer une erreur 401 Unauthorized
+        return res.status(401).json({ error: "L'utilisateur n'existe pas ou le mot de passe est incorrect." });
+    }
+
+    // Génération des tokens JWT pour l'authentification
+    const accessToken = generateAccessToken({ id: user.id, email: user.email }); // Génération du token d'authentification
+    const refreshToken = generateRefreshToken({ id: user.id }); // Génération du token de rafraîchissement
+
+    req.session.userId = user.id; // Stockage de l'identifiant de l'utilisateur dans la session
+    // Envoi de la réponse avec les tokens JWT et les informations utilisateur
+    return res.status(200).json({
+        message: "Authentification réussie", accessToken, refreshToken, user: {
+            userId: user.id,
+            image: user.image,
+            firstname: user.firstname,
+            lastname: user.lastname,
+        }
+    })
 };
