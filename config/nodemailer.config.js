@@ -20,13 +20,12 @@ export const transporter = nodemailer.createTransport({
 
 // Fonction pour envoyer un email d'invitation
 export const sendInvitationEmail = async (email, gameId) => {
-    const user = { email };
     const token = generateInvitationToken({ email, gameId });
     const invitationLink = `http://localhost:5173/api/joingame?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: user,
+        to: email,
         subject: 'Come on and play with us!',
         text: `Click on the invitation: ${invitationLink}`,
         html: `<p>Click here to join the game: <a href="${invitationLink}">${invitationLink}</a></p>`

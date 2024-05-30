@@ -33,7 +33,7 @@ export const getGame = async (req, res) => {
 export const createGame = async (req, res) => {
     const game = req.body;
     const userId = req.userData.id;
-    const email = req.body;
+    const email = req.body.email;
 
     console.log("Received email:", email);
 
