@@ -1,9 +1,9 @@
 import nodemailer from 'nodemailer';
-import jwt from 'jsonwebtoken';
+import { generateInvitationToken } from '../app/utils/token.util.js';
 import 'dotenv/config';
 
 // Configuration du transporter de Nodemailer
-const transporter = nodemailer.createTransport({
+export const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
     secure: false, // Utilise STARTTLS
@@ -17,14 +17,9 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Fonction pour générer un token d'invitation
-const generateInvitationToken = (email) => {
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    return token;
-};
 
 // Fonction pour envoyer un email d'invitation
-const sendInvitationEmail = async (email, gameId) => {
+export const sendInvitationEmail = async (email, gameId) => {
     const token = generateInvitationToken({ email, gameId });
     const invitationLink = `http://localhost:5173/api/joingame?token=${token}`;
 
@@ -36,9 +31,6 @@ const sendInvitationEmail = async (email, gameId) => {
         html: `<p>Click here to join the game: <a href="${invitationLink}">${invitationLink}</a></p>`
     };
 
-        return mailOptions;
+    return mailOptions;
 };
 
-
-
-export { sendInvitationEmail, generateInvitationToken, transporter };

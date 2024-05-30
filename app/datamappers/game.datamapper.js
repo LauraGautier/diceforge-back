@@ -54,7 +54,7 @@ class GameDataMapper {
                 VALUES ($1, $2, $3);
             `;
             await client.query(playQuery, [role, userId, newGame.id]);
-            
+
             await client.query('COMMIT');
             return newGame;
         } catch (error) {

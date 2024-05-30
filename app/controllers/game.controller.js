@@ -1,9 +1,7 @@
 import pool from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
-import { sendInvitationEmail } from '../../config/nodemailer.config.js';
-import { transporter } from '../../config/nodemailer.config.js';
-import jwt from 'jsonwebtoken';
+import { sendInvitationEmail, transporter } from '../../config/nodemailer.config.js';
 import 'dotenv/config';
 
 const gameDataMapper = new GameDataMapper(pool);
@@ -33,19 +31,6 @@ export const getGame = async (req, res) => {
 }
 
 export const createGame = async (req, res) => {
-    /**
-     * Handles game creation.
-     * @description
-     * This function handles the creation of a new game.
-     * It extracts the game data from the request body and the user id from the request user data.
-     * Then it attempts to create the game in the database based on the provided data.
-     * If the game is successfully created, it sends a 201 Created response with the created game data.
-     * If the license is not found, it sends a 400 Bad Request response with an appropriate error message.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
-     * If the user is not connected, it sends a 401 Unauthorized response.
-     
-        */
-       
     const game = req.body;
     const userId = req.userData.id;
     const email = req.body.email;
@@ -64,14 +49,13 @@ export const createGame = async (req, res) => {
             return res.status(400).json({ error: 'Licence non trouvée.' });
         }
 
-        // Générer le token d'invitation
-        const invitationToken = generateAccessToken({ email, license_name: game.license_name });
-        game.invitation_token = invitationToken;
-
         const createdGame = await gameDataMapper.createGame(game, userId);
+        if (!createdGame) {
+            return res.status(500).json({ error: 'Erreur lors de la création du jeu.' });
+        }
 
+        // Envoyer l'email d'invitation
         const mailOptions = await sendInvitationEmail(email, createdGame.id);
-
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("Erreur lors de l'envoi de l'email:", error);
@@ -86,6 +70,7 @@ export const createGame = async (req, res) => {
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 };
+
 
 export const joinGame = async (req, res) => {
     const token = req.query.token;
