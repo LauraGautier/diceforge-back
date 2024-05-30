@@ -2,6 +2,8 @@ import pool from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
 import { sendInvitationEmail } from '../../config/nodemailer.config.js';
+import { transporter } from '../../config/nodemailer.config.js';
+import jwt from 'jsonwebtoken';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
@@ -32,16 +34,20 @@ export const getGame = async (req, res) => {
 export const createGame = async (req, res) => {
     /**
      * Handles game creation.
-     *
      * @description
      * This function handles the creation of a new game.
-     * It extracts the game data from the request body, then attempts to create the game in the database.
-     * If the game is successfully created, it sends a 201 Created response with the game data.
+     * It extracts the game data from the request body and the user id from the request user data.
+     * Then it attempts to create the game in the database based on the provided data.
+     * If the game is successfully created, it sends a 201 Created response with the created game data.
+     * If the license is not found, it sends a 400 Bad Request response with an appropriate error message.
      * In case of any unexpected errors, it sends a 500 Internal Server Error response.
-     */
-const game = req.body;
+     * If the user is not connected, it sends a 401 Unauthorized response.
+     
+        */
+       
+    const game = req.body;
     const userId = req.userData.id;
-    const userEmail = req.userData.email;
+    const email = req.body;
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
@@ -49,7 +55,7 @@ const game = req.body;
 
     // Basic data validation
     if (!game.name || !game.license_name) {
-        return res.status(400).json({ error: 'Missing required game fields.' });
+        return res.status(400).json({ error: 'Champs de jeu requis manquants.' });
     }
 
     try {
@@ -59,31 +65,25 @@ const game = req.body;
         }
 
         const createdGame = await gameDataMapper.createGame(game, userId);
-        const userEmails = await gameDataMapper.findAllUserEmail(userEmail);
+        
 
-        if (userEmails && userEmails.length > 0) {
-            for (const email of userEmails) {
-                await sendInvitationEmail(email, createdGame.id);
+        transporter.sendMail(sendInvitationEmail, (error, info) => {
+            if (error) {
+                console.error("Erreur lors de l'envoi de l'email:", error);
+                return res.status(500).json({ error: "Erreur lors de l'envoi de l'email" });
             }
-        }
+            console.log('Email d\'invitation envoyé avec succès');
+       
+    });
         return res.status(201).json(createdGame);
         
     } catch (error) {
-        console.error('Error creating game:', error);
+        console.error('Erreur lors de la création du jeu :', error);
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 };
 
 export const joinGame = async (req, res) => {
-    /**
-     * Handles game joining.
-     * @description
-     * This function handles the joining of an existing game.
-     * It extracts the game id from the request query parameters, then attempts to find the game in the database
-     * based on the provided id. If the game does not exist, it sends a 404 Not Found response with an appropriate error message.
-     * If the game is found, it sends a 200 OK response with the game data.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
-     */
     const token = req.query.token;
     if (!token) {
         return res.status(400).json({ error: 'Token d\'invitation manquant.' });
@@ -107,8 +107,12 @@ export const joinGame = async (req, res) => {
         await gameDataMapper.joinGame(gameId, user.id, role);
 
         return res.status(200).json(game);
+        
     } catch (error) {
-        console.error('Error joining game:', error);
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(400).json({ error: 'Token d\'invitation invalide.' });
+        }
+        console.error('Erreur lors de la jonction au jeu :', error);
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 };

@@ -39,11 +39,5 @@ export const requestPasswordReset = async (req, res) => {
         }
         res.status(200).json({ message: "Email de réinitialisation envoyé" });
     });
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return res.status(500).json({ error: "Erreur lors de l'envoi de l'email" });
-        }
-        res.status(200).json({ message: "Email de réinitialisation envoyé" });
-    });
 };
        

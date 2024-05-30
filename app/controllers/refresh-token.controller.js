@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import jwtConfig from '../../config/jwt.config.js';
-import { generateAccessToken } from '../utils/auth.util.js';
+import { generateAccessToken } from '../utils/token.util.js';
 
 const { secretKey } = jwtConfig; // Extraction de la clé secrète de la configuration JWT
 

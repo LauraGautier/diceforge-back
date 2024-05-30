@@ -1,43 +1,47 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import 'dotenv/config';
 
-dotenv.config();
-
+// Configuration du transporter de Nodemailer
 const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
-    secure: false, // false si vous utilisez STARTTLS
-    tls: { ciphers: 'TLSv1.2', rejectUnauthorized: true },
+    secure: false, // Utilise STARTTLS
+    tls: {
+        ciphers: 'TLSv1.2',
+        rejectUnauthorized: true
+    },
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
 });
 
+// Fonction pour générer un token d'invitation
 const generateInvitationToken = (email) => {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
     return token;
 };
 
+// Fonction pour envoyer un email d'invitation
 const sendInvitationEmail = async (email, gameId) => {
-    const token = jwt.sign({ email, gameId }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = generateInvitationToken({ email, gameId });
     const invitationLink = `http://localhost:5173/api/joingame?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: "",
+        to: email,
         subject: 'Come on and play with us!',
-        text: `Clic sur l'invitation: ${invitationLink}`,
-        html: `<p>Clic ici pour rejoindre la game: <a href="${invitationLink}">${invitationLink}</a></p>`
+        text: `Click on the invitation: ${invitationLink}`,
+        html: `<p>Click here to join the game: <a href="${invitationLink}">${invitationLink}</a></p>`
     };
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Invitation successfully', email);
+        console.log('Invitation sent successfully to', email);
     } catch (error) {
-        console.error('Error invitation:', error);
-        throw error; 
+        console.error('Error sending invitation:', error);
+        throw error;
     }
 };
 
