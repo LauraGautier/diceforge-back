@@ -33,7 +33,9 @@ export const getGame = async (req, res) => {
 export const createGame = async (req, res) => {
     const game = req.body;
     const userId = req.userData.id;
-    const email = req.body.email;
+    const email = req.body;
+
+    console.log("Received email:", email);
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
