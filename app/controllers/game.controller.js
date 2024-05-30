@@ -1,9 +1,12 @@
 import pool from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
+import { sendInvitationEmail, transporter } from '../../config/nodemailer.config.js';
+import 'dotenv/config';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
+
 
 export const getGame = async (req, res) => {
     /**
@@ -28,20 +31,18 @@ export const getGame = async (req, res) => {
 }
 
 export const createGame = async (req, res) => {
-    /**
-     * Handles game creation.
-     *
-     * @description
-     * This function handles the creation of a new game.
-     * It extracts the game data from the request body, then attempts to create the game in the database.
-     * If the game is successfully created, it sends a 201 Created response with the game data.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
-     */
     const game = req.body;
     const userId = req.userData.id;
+    const email = req.body.email;
+
+    console.log("Received email:", email);
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
+    }
+
+    if (!game.name || !game.license_name) {
+        return res.status(400).json({ error: 'Champs de jeu requis manquants.' });
     }
 
     try {
@@ -51,9 +52,58 @@ export const createGame = async (req, res) => {
         }
 
         const createdGame = await gameDataMapper.createGame(game, userId);
+        if (!createdGame) {
+            return res.status(500).json({ error: 'Erreur lors de la création du jeu.' });
+        }
+
+        // Envoyer l'email d'invitation
+        const mailOptions = await sendInvitationEmail(email, createdGame.id);
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Erreur lors de l'envoi de l'email:", error);
+                return res.status(500).json({ error: "Erreur lors de l'envoi de l'email" });
+            }
+            console.log('Email d\'invitation envoyé avec succès');
+        });
+
         return res.status(201).json(createdGame);
     } catch (error) {
-        console.error('Error creating game:', error);
+        console.error('Erreur lors de la création du jeu :', error);
+        return res.status(500).json({ error: 'Erreur interne du serveur.' });
+    }
+};
+
+
+export const joinGame = async (req, res) => {
+    const token = req.query.token;
+    if (!token) {
+        return res.status(400).json({ error: 'Token d\'invitation manquant.' });
+    }
+
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const { email, gameId } = decodedToken;
+
+        const game = await gameDataMapper.findGameById(gameId);
+        if (!game) {
+            return res.status(404).json({ error: 'Partie non trouvée.' });
+        }
+
+        const user = await userDataMapper.findUserByEmail(email);
+        if (!user) {
+            return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+        }
+
+        const role = 'player';
+        await gameDataMapper.joinGame(gameId, user.id, role);
+
+        return res.status(200).json(game);
+        
+    } catch (error) {
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(400).json({ error: 'Token d\'invitation invalide.' });
+        }
+        console.error('Erreur lors de la jonction au jeu :', error);
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 };
