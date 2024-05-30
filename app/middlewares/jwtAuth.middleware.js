@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import jwtConfig from '../../config/jwt.config.js';
-import "dotenv/config";
 
 const jwtAuthMiddleware = (req, res, next) => {
     // Vérifier si l'en-tête d'autorisation est présent

@@ -4,6 +4,7 @@ import LicenseDataMapper from '../datamappers/license.datamapper.js';
 import { sendInvitationEmail } from '../../config/nodemailer.config.js';
 import { transporter } from '../../config/nodemailer.config.js';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
@@ -47,13 +48,12 @@ export const createGame = async (req, res) => {
        
     const game = req.body;
     const userId = req.userData.id;
-    const email = req.body;
+    const email = req.body.email;
 
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
     }
 
-    // Basic data validation
     if (!game.name || !game.license_name) {
         return res.status(400).json({ error: 'Champs de jeu requis manquants.' });
     }
@@ -64,19 +64,23 @@ export const createGame = async (req, res) => {
             return res.status(400).json({ error: 'Licence non trouvée.' });
         }
 
-        const createdGame = await gameDataMapper.createGame(game, userId);
-        
+        // Générer le token d'invitation
+        const invitationToken = generateAccessToken({ email, license_name: game.license_name });
+        game.invitation_token = invitationToken;
 
-        transporter.sendMail(sendInvitationEmail, (error, info) => {
+        const createdGame = await gameDataMapper.createGame(game, userId);
+
+        const mailOptions = await sendInvitationEmail(email, createdGame.id);
+
+        transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 console.error("Erreur lors de l'envoi de l'email:", error);
                 return res.status(500).json({ error: "Erreur lors de l'envoi de l'email" });
             }
             console.log('Email d\'invitation envoyé avec succès');
-       
-    });
+        });
+
         return res.status(201).json(createdGame);
-        
     } catch (error) {
         console.error('Erreur lors de la création du jeu :', error);
         return res.status(500).json({ error: 'Erreur interne du serveur.' });

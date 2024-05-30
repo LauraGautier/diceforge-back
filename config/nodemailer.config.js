@@ -36,13 +36,9 @@ const sendInvitationEmail = async (email, gameId) => {
         html: `<p>Click here to join the game: <a href="${invitationLink}">${invitationLink}</a></p>`
     };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log('Invitation sent successfully to', email);
-    } catch (error) {
-        console.error('Error sending invitation:', error);
-        throw error;
-    }
+        return mailOptions;
 };
+
+
 
 export { sendInvitationEmail, generateInvitationToken, transporter };
