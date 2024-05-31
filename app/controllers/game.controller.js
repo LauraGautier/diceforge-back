@@ -3,15 +3,18 @@ import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
 import { sendInvitationEmail, transporter } from '../../config/nodemailer.config.js';
 import 'dotenv/config';
+import jwt from 'jsonwebtoken';
+import UserDataMapper from '../datamappers/user.datamapper.js';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
+const userDataMapper = new UserDataMapper(pool);
 
 
 export const getGame = async (req, res) => {
    /**
      * @swagger
-     * /games/{id}:
+     * /game/{id}:
      *   get:
      *     summary: Get game by ID
      *     tags: [Games]
@@ -22,14 +25,7 @@ export const getGame = async (req, res) => {
      *         description: ID of the game to get
      *         schema:
      *           type: integer
-     *     responses:
-     *       200:
-     *         description: Game found'
-     *       404:
-     *         description: Game not found
-     *       500:
-     *         description: Internal server error
-     */
+    */
     const id = req.params.id;
     const game = await gameDataMapper.findGameById(id);
 
@@ -41,8 +37,45 @@ export const getGame = async (req, res) => {
 }
 
 
+
 export const createGame = async (req, res) => {
-    
+        /**
+     * @swagger
+     * /game:
+     *  post:
+     *    summary: Create a new game
+     *    tags: [Games]
+     *    requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *          schema:
+     *            type: object
+     *            properties:
+     *              name:
+     *                type: string
+     *              music:
+     *                type: string
+     *              note:
+     *                type: string
+     *              license_name:
+     *                type: string
+     *              email:
+     *                type: string
+     *            required:
+     *              - name
+     *              - license_name
+     *              - email
+     *    responses:
+     *      201:
+     *        description: Game created
+     *      400:
+     *        description: Missing required fields or license not found
+     *      401:
+     *        description: User not logged in
+     *      500:
+     *        description: Internal server error
+     */
     const game = req.body;
     const userId = req.userData.id;
     const email = req.body.email;
@@ -122,14 +155,18 @@ export const joinGame = async (req, res) => {
 
 export const updateGame = async (req, res) => {
     /**
-     * Handles game update.
-     *  @description
-     * This function handles the update of an existing game.
-     * It extracts the game id from the request parameters and the updated game data from the request body.
-     * Then it attempts to update the game in the database based on the provided id.
-     * If the game is successfully updated, it sends a 200 OK response with the updated game data.
-     * If the game is not found, it sends a 404 Not Found response with an appropriate error message.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+     * @swagger
+     * /game/{id}:
+     *  put:
+     *   summary: Update a game
+     *  tags: [Games]
+     * parameters:
+     *  - in: path
+     *   name: id
+     *  required: true
+     * description: ID of the game to update
+     * 
+     *
      */
     const game = {
         id: req.params.id,

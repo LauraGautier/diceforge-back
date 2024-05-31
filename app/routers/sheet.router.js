@@ -5,6 +5,7 @@ import jwtAuthMiddleware from "../middlewares/jwtAuth.middleware.js";
 const router = express.Router();
 
 router.get("/sheet", jwtAuthMiddleware, cw(sheetController.getSheet));
+router.get("/binder", jwtAuthMiddleware, cw(sheetController.getBinder));
 router.post("/sheet", jwtAuthMiddleware, cw(sheetController.createSheet));
 router.patch("/sheet/:name", jwtAuthMiddleware, cw(sheetController.updateSheet));
 router.delete("/sheet/:name", jwtAuthMiddleware, cw(sheetController.deleteSheet));
