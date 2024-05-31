@@ -8,6 +8,32 @@ const userDataMapper = new UserDataMapper(pool);
 const passwordDataMapper = new PasswordDataMapper(pool);
 
 export const requestPasswordReset = async (req, res) => {
+ /**
+ * @swagger
+ * /forgot-password:
+ *   post:
+ *     summary: Request password reset
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: "user@example.com"
+ *             required:
+ *               - email
+ *     responses:
+ *       200:
+ *         description: Password reset email sent
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error sending email
+ */
     const { email } = req.body;
     const user = await userDataMapper.findUserByEmail(email);
     if (!user) {

@@ -12,5 +12,4 @@ router.post('/refresh-token', cw(refreshTokenController.refreshAccessToken));
 router.post("/forgot-password", cw(forgotPasswordController.requestPasswordReset));
 router.post("/reset-password", cw(resetPasswordController.resetPassword));
 
-
 export default router;

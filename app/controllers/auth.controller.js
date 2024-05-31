@@ -6,6 +6,31 @@ import { generateAccessToken, generateRefreshToken } from '../utils/token.util.j
 const userDataMapper = new UserDataMapper(pool);
 
 export const login = async (req, res) => {
+    /**
+     * @swagger
+     * /login:
+     *   post:
+     *     summary: User login
+     *     tags: [Auth]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               email:
+     *                 type: string
+     *               password:
+     *                 type: string
+     *             required:
+     *               - email
+     *               - password
+     *     responses:
+     *       200:
+     *         description: User logged in successfully
+     */
+    
     // Fonction de gestion de la connexion utilisateur
     const { email, password } = req.body; // Extraction de l'email et du mot de passe à partir du corps de la requête
     const user = await userDataMapper.findUserByEmail(email); // Recherche de l'utilisateur dans la base de données par son email

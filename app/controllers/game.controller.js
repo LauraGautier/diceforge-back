@@ -9,16 +9,27 @@ const licenseDataMapper = new LicenseDataMapper(pool);
 
 
 export const getGame = async (req, res) => {
-    /**
- * Handles game retrieval by ID.
- *
- * @description
- * This function handles the localization of a game by its id.
- * It extracts the game id from the request parameters, then attempts to find the game in the database
- * based on the provided id. If the game does not exist, it sends a 404 Not Found response with an appropriate error message.
- * If the game is found, it sends a 200 OK response with the game data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
+   /**
+     * @swagger
+     * /games/{id}:
+     *   get:
+     *     summary: Get game by ID
+     *     tags: [Games]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID of the game to get
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: Game found'
+     *       404:
+     *         description: Game not found
+     *       500:
+     *         description: Internal server error
+     */
     const id = req.params.id;
     const game = await gameDataMapper.findGameById(id);
 
@@ -27,10 +38,11 @@ export const getGame = async (req, res) => {
     }
 
     return res.status(200).json(game);
-
 }
 
+
 export const createGame = async (req, res) => {
+    
     const game = req.body;
     const userId = req.userData.id;
     const email = req.body.email;
