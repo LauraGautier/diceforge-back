@@ -1,12 +1,10 @@
 import nodemailer from 'nodemailer';
-import { generateInvitationToken } from '../app/utils/token.util.js';
 import 'dotenv/config';
 
-// Configuration du transporter de Nodemailer
 export const transporter = nodemailer.createTransport({
     host: 'smtp-mail.outlook.com',
     port: 587,
-    secure: false, // Utilise STARTTLS
+    secure: false, // Uses STARTTLS
     tls: {
         ciphers: 'TLSv1.2',
         rejectUnauthorized: true
@@ -17,10 +15,7 @@ export const transporter = nodemailer.createTransport({
     }
 });
 
-
-// Fonction pour envoyer un email d'invitation
-export const sendInvitationEmail = async (email, gameId) => {
-    const token = generateInvitationToken({ email, gameId });
+export const sendInvitationEmail = async (email, gameId, token) => {
     const invitationLink = `http://localhost:5173/api/joingame?token=${token}`;
 
     const mailOptions = {
@@ -31,6 +26,20 @@ export const sendInvitationEmail = async (email, gameId) => {
         html: `<p>Click here to join the game: <a href="${invitationLink}">${invitationLink}</a></p>`
     };
 
-    return mailOptions;
+    return transporter.sendMail(mailOptions);
 };
 
+export const sendPasswordResetEmail = async (user, resetToken) => {
+    const resetLink = `http://localhost:5173/api/reset-password?token=${resetToken}&id=${user.id}`;
+    const mailOptions = {
+        to: user.email,
+        from: 'diceforgeteam@outlook.com',
+        subject: 'Réinitialisation de mot de passe',
+        text: `Vous recevez cet email parce que vous (ou quelqu'un d'autre) avez demandé la réinitialisation du mot de passe de votre compte.\n\n
+            Cliquez sur le lien suivant ou copiez-le dans votre navigateur pour compléter le processus:\n\n
+            ${resetLink}\n\n
+            Si vous n'avez pas demandé cette réinitialisation, veuillez ignorer cet email et votre mot de passe restera inchangé.\n`
+    };
+
+    return transporter.sendMail(mailOptions);
+};

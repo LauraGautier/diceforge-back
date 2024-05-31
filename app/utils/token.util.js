@@ -18,6 +18,6 @@ export const generateInvitationToken = (payload) => {
 
 export const generateResetToken = () => {
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
     return { resetToken, resetTokenExpiry };
 };
