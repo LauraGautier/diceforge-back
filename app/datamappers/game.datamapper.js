@@ -124,6 +124,14 @@ class GameDataMapper {
         }
     }
 
+    async joinGame(gameId, userId) {
+        const query = `
+            INSERT INTO play (role, user_id, game_id) 
+            VALUES ('player', $1, $2);
+        `;
+        await this.pool.query(query, [userId, gameId]);
+    }
+
 }
 
 export default GameDataMapper;
