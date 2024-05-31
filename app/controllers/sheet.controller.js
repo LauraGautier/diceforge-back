@@ -78,3 +78,13 @@ export const deleteSheet = async (req, res) => {
 
     res.status(204).send();
 }
+
+export const getAllSheets = async (req, res) => {
+ 
+    const sheets = await sheetDataMapper.findAllSheets();
+
+    if (!sheets) {
+        return res.status(404).json({ error: "Aucune fiche n'a été trouvée." });
+    }
+    return res.status(200).json(sheets);
+}

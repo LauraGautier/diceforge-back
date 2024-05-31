@@ -9,6 +9,12 @@ class SheetDataMapper {
         return result.rows[0] || null;
     }
 
+    async findAllSheets() {
+        const query = 'SELECT * FROM sheet';
+        const result = await this.pool.query(query);
+        return result.rows;
+    }
+    
     async createSheet(sheet) {
         const query = `
             INSERT INTO sheet (name, image, class, level)
