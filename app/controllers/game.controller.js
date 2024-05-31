@@ -154,20 +154,61 @@ export const joinGame = async (req, res) => {
 };
 
 export const updateGame = async (req, res) => {
-    /**
-     * @swagger
-     * /game/{id}:
-     *  put:
-     *   summary: Update a game
-     *  tags: [Games]
-     * parameters:
-     *  - in: path
-     *   name: id
-     *  required: true
-     * description: ID of the game to update
-     * 
-     *
-     */
+/**
+ * @swagger
+ * /game/{id}:
+ *   put:
+ *     summary: Update a game
+ *     tags: [Games]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the game to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the game
+ *               music:
+ *                 type: string
+ *                 description: Background music choice
+ *               note:
+ *                 type: string
+ *                 description: Additional notes
+ *               event:
+ *                 type: string
+ *                 description: Event associated with the game
+ *     responses:
+ *       200:
+ *         description: Game updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 music:
+ *                   type: string
+ *                 note:
+ *                   type: string
+ *                 event:
+ *                   type: string
+ *       404:
+ *         description: Game not found
+ *       400:
+ *         description: Invalid input, object invalid
+ */
     const game = {
         id: req.params.id,
         name: req.body.name,
@@ -185,14 +226,26 @@ export const updateGame = async (req, res) => {
 
 export const deleteGame = async (req, res) => {
     /**
- * Handles game deletion.
- *
- * @description
- * This function handles the deletion of an existing game.
- * It extracts the game id from the request parameters, then attempts to delete the game in the database.
- * If the game is successfully deleted, it sends a 204 No Content response.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
+     * @swagger
+     * /game/{id}:
+     *   delete:
+     *     summary: Delete a game
+     *     tags: [Games]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID of the game to delete
+     *         schema:
+     *           type: string
+     *     responses:
+     *       204:
+     *         description: Game deleted successfully
+     *       404:
+     *         description: Game not found
+     *       500:
+     *         description: Internal server error
+    */
     const id = req.params.id;
     await gameDataMapper.deleteGame(id);
 
@@ -200,15 +253,55 @@ export const deleteGame = async (req, res) => {
 }
 
 export const findGamesByUserId = async (req, res) => {
-    /**
- * Handles games retrieval by user ID.
- *
- * @description
- * This function handles the localization of games by user id.
- * It extracts the user id from the request parameters, then attempts to find the games in the database
- * based on the provided id. If the games do not exist, it sends a 404 Not Found response with an appropriate error message.
- * If the games are found, it sends a 200 OK response with the games data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+/**
+ * @swagger
+ * /game/user/{id}:
+ *   get:
+ *     summary: Get games by user ID
+ *     tags: [Games]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to get games from
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Games found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   music:
+ *                     type: string
+ *                   note:
+ *                     type: string
+ *                   event:
+ *                     type: string
+ *                   license_name:
+ *                     type: string
+ *                   invitation_token:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                   updated_at:
+ *                     type: string
+ *                   user_id:
+ *                     type: string
+ *                   role:
+ *                     type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */
     const userId = req.params.id;
     if (!userId) {
