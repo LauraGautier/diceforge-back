@@ -4,16 +4,51 @@ import SheetDataMapper from '../datamappers/sheet.datamapper.js';
 const sheetDataMapper = new SheetDataMapper(pool);
 
 export const getSheet = async (req, res) => {
-    /**
-     * Handles sheet retrieval by name.
-     *
-     * @description
-     * This function handles the localization of a sheet by its name.
-     * It extracts the sheet name from the request parameters, then attempts to retrieve the sheet from the database.
-     * If the sheet is found, it sends a 200 OK response with the sheet data.
-     * If the sheet is not found, it sends a 404 Not Found response with an appropriate error message.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+   /**
+     * @openapi
+     * /sheet:
+     *   get:
+     *     summary: Retrieve a sheet by name
+     *     tags: [Sheet]
+     *     description: This endpoint retrieves a sheet by its name.
+     *     parameters:
+     *       - in: query
+     *         name: name
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The sheet name.
+     *     responses:
+     *       200:
+     *         description: Sheet retrieved successfully.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 name:
+     *                   type: string
+     *                   description: The name of the sheet.
+     *                 // Example of additional properties:
+     *                 data:
+     *                   type: array
+     *                   description: Data contained in the sheet.
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       // Define properties of data items
+     *       404:
+     *         description: Sheet not found.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Error message.
      */
+
     const name = req.params.name;
     const sheet = await sheetDataMapper.findSheetByName(name);
 
@@ -25,13 +60,29 @@ export const getSheet = async (req, res) => {
 
 export const createSheet = async (req, res) => {
     /**
- * Handles sheet creation.
- *
- * @description
- * This function handles the creation of a new sheet.
- * It extracts the sheet data from the request body, then attempts to create the sheet in the database.
- * If the sheet is successfully created, it sends a 201 Created response with the created sheet data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+ * @openapi
+ * /sheet:
+ *   post:
+ *     summary: Create a new sheet
+ *     tags: [Sheet]
+ *     description: This endpoint creates a new sheet.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               // Add the properties of the sheet object here
+ *     responses:
+ *       201:
+ *         description: Sheet created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 // Add the properties of the created sheet object here
  */
     const sheet = req.body;
     const createdSheet = await sheetDataMapper.createSheet(sheet);
@@ -40,16 +91,66 @@ export const createSheet = async (req, res) => {
 }
 
 export const updateSheet = async (req, res) => {
-    /**
-     * Handles sheet update.
-     * @description
-     * This function handles the update of an existing sheet.
-     * It extracts the sheet name from the request parameters and the updated sheet data from the request body.
-     * It then attempts to update the sheet in the database.
-     * If the sheet is successfully updated, it sends a 200 OK response with the updated sheet data.
-     * If the sheet is not found, it sends a 404 Not Found response with an appropriate error message.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+  /**
+     * @openapi
+     * /sheet/{name}:
+     *   patch:
+     *     summary: Update a sheet by name
+     *     tags: [Sheet]
+     *     description: This endpoint updates a sheet by its name.
+     *     parameters:
+     *       - in: path
+     *         name: name
+     *         required: true
+     *         schema:
+     *           type: string
+     *         description: The sheet name.
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 description: URL or identifier of the image associated with the sheet.
+     *               class:
+     *                 type: string
+     *                 description: Classification or category of the sheet.
+     *               level:
+     *                 type: integer
+     *                 description: Level or priority of the sheet.
+     *     responses:
+     *       200:
+     *         description: Sheet updated successfully.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 name:
+     *                   type: string
+     *                 data:
+     *                   type: array
+     *                   description: Data contained in the sheet.
+     *                   items:
+     *                     type: object
+     *                     properties:
+     *                       // Define specific properties of data items here
+     *       404:
+     *         description: Sheet not found.
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 error:
+     *                   type: string
+     *                   description: Error message.
      */
+
+
     const name = req.params.name;
     const { image, class: className, level } = req.body; // we use alias to avoid conflict with reserved keyword 'class'
 
@@ -62,17 +163,27 @@ export const updateSheet = async (req, res) => {
     res.status(200).json(updatedSheet);
 };
 
-
 export const deleteSheet = async (req, res) => {
     /**
- * Handles sheet deletion.
- *
- * @description
- * This function handles the deletion of an existing sheet.
- * It extracts the sheet id from the request parameters, then attempts to delete the sheet in the database.
- * If the sheet is successfully deleted, it sends a 204 No Content response.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
+     * @openapi
+     * /sheet/{id}:
+     *   delete:
+     *     summary: Delete a sheet
+     *     tags: [Sheet]
+     *     description: Deletes a sheet by its unique ID.
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: Unique identifier of the sheet to delete.
+     *         schema:
+     *           type: string
+     *     responses:
+     *       204:
+     *         description: No Content, sheet deleted successfully.
+     *       404:
+     *         description: Not Found, sheet not found.
+     */
     const id = req.params.id;
     await sheetDataMapper.deleteSheet(id);
 

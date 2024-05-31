@@ -3,22 +3,29 @@ import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
 import { sendInvitationEmail, transporter } from '../../config/nodemailer.config.js';
 import 'dotenv/config';
+import jwt from 'jsonwebtoken';
+import UserDataMapper from '../datamappers/user.datamapper.js';
 
 const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
+const userDataMapper = new UserDataMapper(pool);
 
 
 export const getGame = async (req, res) => {
-    /**
- * Handles game retrieval by ID.
- *
- * @description
- * This function handles the localization of a game by its id.
- * It extracts the game id from the request parameters, then attempts to find the game in the database
- * based on the provided id. If the game does not exist, it sends a 404 Not Found response with an appropriate error message.
- * If the game is found, it sends a 200 OK response with the game data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
+   /**
+     * @swagger
+     * /game/{id}:
+     *   get:
+     *     summary: Get game by ID
+     *     tags: [Games]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID of the game to get
+     *         schema:
+     *           type: integer
+    */
     const id = req.params.id;
     const game = await gameDataMapper.findGameById(id);
 
@@ -27,10 +34,48 @@ export const getGame = async (req, res) => {
     }
 
     return res.status(200).json(game);
-
 }
 
+
+
 export const createGame = async (req, res) => {
+        /**
+     * @swagger
+     * /game:
+     *  post:
+     *    summary: Create a new game
+     *    tags: [Games]
+     *    requestBody:
+     *      required: true
+     *      content:
+     *        application/json:
+     *          schema:
+     *            type: object
+     *            properties:
+     *              name:
+     *                type: string
+     *              music:
+     *                type: string
+     *              note:
+     *                type: string
+     *              license_name:
+     *                type: string
+     *              email:
+     *                type: string
+     *            required:
+     *              - name
+     *              - license_name
+     *              - email
+     *    responses:
+     *      201:
+     *        description: Game created
+     *      400:
+     *        description: Missing required fields or license not found
+     *      401:
+     *        description: User not logged in
+     *      500:
+     *        description: Internal server error
+     */
     const game = req.body;
     const userId = req.userData.id;
     const email = req.body.email;
@@ -109,16 +154,61 @@ export const joinGame = async (req, res) => {
 };
 
 export const updateGame = async (req, res) => {
-    /**
-     * Handles game update.
-     *  @description
-     * This function handles the update of an existing game.
-     * It extracts the game id from the request parameters and the updated game data from the request body.
-     * Then it attempts to update the game in the database based on the provided id.
-     * If the game is successfully updated, it sends a 200 OK response with the updated game data.
-     * If the game is not found, it sends a 404 Not Found response with an appropriate error message.
-     * In case of any unexpected errors, it sends a 500 Internal Server Error response.
-     */
+/**
+ * @swagger
+ * /game/{id}:
+ *   put:
+ *     summary: Update a game
+ *     tags: [Games]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the game to update
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the game
+ *               music:
+ *                 type: string
+ *                 description: Background music choice
+ *               note:
+ *                 type: string
+ *                 description: Additional notes
+ *               event:
+ *                 type: string
+ *                 description: Event associated with the game
+ *     responses:
+ *       200:
+ *         description: Game updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 music:
+ *                   type: string
+ *                 note:
+ *                   type: string
+ *                 event:
+ *                   type: string
+ *       404:
+ *         description: Game not found
+ *       400:
+ *         description: Invalid input, object invalid
+ */
     const game = {
         id: req.params.id,
         name: req.body.name,
@@ -136,14 +226,26 @@ export const updateGame = async (req, res) => {
 
 export const deleteGame = async (req, res) => {
     /**
- * Handles game deletion.
- *
- * @description
- * This function handles the deletion of an existing game.
- * It extracts the game id from the request parameters, then attempts to delete the game in the database.
- * If the game is successfully deleted, it sends a 204 No Content response.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
- */
+     * @swagger
+     * /game/{id}:
+     *   delete:
+     *     summary: Delete a game
+     *     tags: [Games]
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         required: true
+     *         description: ID of the game to delete
+     *         schema:
+     *           type: string
+     *     responses:
+     *       204:
+     *         description: Game deleted successfully
+     *       404:
+     *         description: Game not found
+     *       500:
+     *         description: Internal server error
+    */
     const id = req.params.id;
     await gameDataMapper.deleteGame(id);
 
@@ -151,15 +253,55 @@ export const deleteGame = async (req, res) => {
 }
 
 export const findGamesByUserId = async (req, res) => {
-    /**
- * Handles games retrieval by user ID.
- *
- * @description
- * This function handles the localization of games by user id.
- * It extracts the user id from the request parameters, then attempts to find the games in the database
- * based on the provided id. If the games do not exist, it sends a 404 Not Found response with an appropriate error message.
- * If the games are found, it sends a 200 OK response with the games data.
- * In case of any unexpected errors, it sends a 500 Internal Server Error response.
+/**
+ * @swagger
+ * /game/user/{id}:
+ *   get:
+ *     summary: Get games by user ID
+ *     tags: [Games]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user to get games from
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Games found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   music:
+ *                     type: string
+ *                   note:
+ *                     type: string
+ *                   event:
+ *                     type: string
+ *                   license_name:
+ *                     type: string
+ *                   invitation_token:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                   updated_at:
+ *                     type: string
+ *                   user_id:
+ *                     type: string
+ *                   role:
+ *                     type: string
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
  */
     const userId = req.params.id;
     if (!userId) {
