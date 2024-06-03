@@ -17,11 +17,11 @@ class SheetDataMapper {
     
     async createSheet(sheet) {
         const query = `
-            INSERT INTO sheet (name, image, class, level)
-            VALUES ($1, $2, $3, $4)
+            INSERT INTO sheet (name, image, class, level, game_id)
+            VALUES ($1, $2, $3, $4, $5)
             RETURNING *;
         `;
-        const values = [sheet.name, sheet.image, sheet.class, sheet.level];
+        const values = [sheet.name, sheet.image, sheet.class, sheet.level, sheet.game_id];
         const result = await this.pool.query(query, values);
         return result.rows[0];
     }
