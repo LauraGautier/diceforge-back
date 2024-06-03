@@ -1,4 +1,3 @@
-// app.js ou server.js
 
 // Charger les variables d'environnement
 import 'dotenv/config';
@@ -58,3 +57,5 @@ httpServer.listen(PORT, () => {
   console.log(`Application lancée sur le port ${PORT}`);
   console.log(`Documentation de l'API disponible à http://localhost:${PORT}${process.env.API_DOCUMENTATION}`);
 });
+
+export default app;
