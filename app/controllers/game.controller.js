@@ -126,14 +126,22 @@ export const deleteGame = async (req, res) => {
     res.status(204).send();
 }
 
-export const findGamesByUserId = async (req, res) => {
-    const userId = req.params.id;
+export const findGamesByUserIdandGameId = async (req, res) => {
+    const userId = req.params.userId;
+    const gameId = req.params.gameId;
+
     if (!userId) {
         return res.status(400).json({ error: "User ID is required." });
     }
 
-    const games = await gameDataMapper.findGamesByUserId(userId);
-    
-    return res.status(200).json(games);
+    const userGames = await gameDataMapper.findGamesByUserId(userId);
+    const game = await gameDataMapper.findGameById(gameId);
+
+    const response = {
+        userGames,
+        game
+    };
+
+    return res.status(200).json(response);
 }
 

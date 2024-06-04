@@ -16,8 +16,12 @@ class SheetDataMapper {
     }
     
     async createSheet(sheet) {
+        if (!Number.isInteger(sheet.level) || !Number.isInteger(sheet.game_id)) {
+            throw new Error('Invalid input: level and game_id must be integers');
+        }
+
         const query = `
-            INSERT INTO sheet (name, image, class, level, game_id)
+            INSERT INTO "sheet" (name, image, class, level, game_id)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *;
         `;
@@ -44,13 +48,16 @@ class SheetDataMapper {
             values.push(sheet.class);
         }
         if (sheet.level !== undefined) {
+            if (!Number.isInteger(sheet.level)) {
+                throw new Error('Invalid input: level must be an integer');
+            }
             fields.push(`level = $${index++}`);
             values.push(sheet.level);
         }
 
         fields.push(`updated_at = NOW()`);
 
-        // Ajouter le nom à la fin des valeurs pour la clause WHERE
+        // Add the name at the end of the values for the WHERE clause
         values.push(sheet.name);
 
         const query = `
