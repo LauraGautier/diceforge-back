@@ -9,4 +9,9 @@ VALUES
 ('Warhammer'),
 ('Libre');
 
+
+INSERT INTO "game" (id, name)
+VALUES
+('1', 'Le trésor perdu');
+
 COMMIT;

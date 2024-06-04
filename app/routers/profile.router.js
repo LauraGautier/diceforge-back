@@ -6,7 +6,7 @@ import * as gameController from '../controllers/game.controller.js';
 
 const router = express.Router();
 
-router.get("/profile", jwtAuthMiddleware, cw(gameController.findGamesByUserId));
+router.get("/profile/:id", jwtAuthMiddleware, cw(gameController.findGamesByUserId));
 router.patch("/profile", jwtAuthMiddleware, cw(profileController.updateProfile));
 
 export default router;
