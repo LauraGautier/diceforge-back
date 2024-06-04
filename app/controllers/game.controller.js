@@ -132,8 +132,14 @@ export const findGamesByUserId = async (req, res) => {
         return res.status(400).json({ error: "User ID is required." });
     }
 
-    const games = await gameDataMapper.findGamesByUserId(userId);
-    
-    return res.status(200).json(games);
-}
+    try {
+        const games = await gameDataMapper.findGamesByUserId(userId);
+        console.log(games);  // Afficher les jeux pour vérifier que 'id' est inclus
+        return res.status(200).json(games);
+    } catch (error) {
+        console.error('Failed to fetch games:', error);
+        return res.status(500).json({ error: "Failed to fetch games." });
+    }
+};
+
 
