@@ -1,16 +1,18 @@
+
 // Charger les variables d'environnement
-import "dotenv/config";
+import 'dotenv/config';
 
 // Importation des modules avec ES6
 import express from 'express';
-import { createServer } from "node:http";
+import { createServer } from 'node:http';
 
-import router from "./app/routers/main.router.js";
-import session from "express-session";
-import cors from "cors";
-import corsOptions from "./config/cors.config.js";
-import setupSocket from "./config/socket.config.js"; 
-import errorHandler from "./app/middlewares/errorHandler.middleware.js";
+import router from './app/routers/main.router.js';
+import session from 'express-session';
+import cors from 'cors';
+import corsOptions from './config/cors.config.js';
+import setupSocket from './config/socket.config.js';
+import errorHandler from './app/middlewares/errorHandler.middleware.js';
+import setupSwagger from './config/swagger.config.js';
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,10 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Rendre les fichiers statiques disponibles
-app.use(express.static("./public"));
+app.use(express.static('./public'));
 
 // Activation CORS
 app.use(cors(corsOptions));
+
+
 
 // Configuration des sessions
 app.use(
@@ -32,19 +36,26 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 }
+    cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 },
   })
 );
 
 // Configuration de Socket.IO
-const io = setupSocket(httpServer);  // Utilisation de la fonction importée
+const io = setupSocket(httpServer); // Utilisation de la fonction importée
 
 // Routes
 app.use(router);
 
+// Middleware pour gérer les erreurs
 app.use(errorHandler);
+
+// Configuration de Swagger
+setupSwagger(app);
 
 // Démarrage du serveur HTTP
 httpServer.listen(PORT, () => {
   console.log(`Application lancée sur le port ${PORT}`);
+  console.log(`Documentation de l'API disponible à http://localhost:${PORT}${process.env.API_DOCUMENTATION}`);
 });
+
+export default app;

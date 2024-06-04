@@ -1,7 +1,8 @@
 const jwtConfig = {
-    secretKey: '2dztl%-cv+@&dyjwz9848su!7wob316bn6op*ty9#&0gtuaz^', // Clé secrète pour signer les tokens JWT
+    secretKey: process.env.JWT_SECRET,
     options: {
-        expiresIn: '1h' // Token expirera après 1 heure
+        accessExpiresIn: '15m', // Durée de vie du token d'authentification
+        refreshExpiresIn: '1d' // Durée de vie du token de rafraîchissement 
     }
 };
 

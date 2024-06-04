@@ -22,14 +22,20 @@ class GameDataMapper {
         return result.rows;
     }
 
+    async findAllUserEmail(email) {
+        const query = 'SELECT * FROM "user" WHERE email = $1';
+        const result = await this.pool.query(query, [email]);
+        return result.rows;
+    }
+
     async createGame(game, userId) {
         const client = await this.pool.connect();
         try {
             await client.query('BEGIN');
 
             const gameQuery = `
-                INSERT INTO game (name, music, note, event, license_name) 
-                VALUES ($1, $2, $3, $4, $5) 
+                INSERT INTO game (name, music, note, event, license_name, invitation_token) 
+                VALUES ($1, $2, $3, $4, $5, $6) 
                 RETURNING *;
             `;
             const gameResult = await client.query(gameQuery, [
@@ -37,7 +43,8 @@ class GameDataMapper {
                 game.music, 
                 game.note, 
                 game.event, 
-                game.license_name
+                game.license_name,
+                game.invitation_token
             ]);
             const newGame = gameResult.rows[0];
 
@@ -115,6 +122,14 @@ class GameDataMapper {
         } finally {
             client.release(); 
         }
+    }
+
+    async joinGame(gameId, userId) {
+        const query = `
+            INSERT INTO play (role, user_id, game_id) 
+            VALUES ('player', $1, $2);
+        `;
+        await this.pool.query(query, [userId, gameId]);
     }
 
 }
