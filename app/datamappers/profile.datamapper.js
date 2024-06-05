@@ -1,4 +1,5 @@
 class ProfileDatamapper {
+
     constructor(pool) {
         this.pool = pool;
     }
@@ -25,7 +26,6 @@ class ProfileDatamapper {
         }
 
         fields.push(`updated_at = NOW()`);
-
         values.push(profile.id);
 
         const query = `

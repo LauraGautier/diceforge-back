@@ -10,7 +10,6 @@ const gameDataMapper = new GameDataMapper(pool);
 const licenseDataMapper = new LicenseDataMapper(pool);
 const userDataMapper = new UserDataMapper(pool);
 
-
 export const getGame = async (req, res) => {
 
     const id = req.params.id;
@@ -22,8 +21,6 @@ export const getGame = async (req, res) => {
 
     return res.status(200).json(game);
 }
-
-
 
 export const createGame = async (req, res) => {
     const game = req.body;
@@ -51,7 +48,7 @@ export const createGame = async (req, res) => {
             return res.status(500).json({ error: 'Erreur lors de la création du jeu.' });
         }
 
-        // Envoyer l'email d'invitation
+        // Envoie de l'email d'invitation
         const mailOptions = await sendInvitationEmail(email, createdGame.id);
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -67,7 +64,6 @@ export const createGame = async (req, res) => {
         return res.status(500).json({ error: 'Erreur interne du serveur.' });
     }
 };
-
 
 export const joinGame = async (req, res) => {
     const token = req.query.token;
@@ -122,7 +118,6 @@ export const updateGame = async (req, res) => {
 export const deleteGame = async (req, res) => {
     const id = req.params.id;
     await gameDataMapper.deleteGame(id);
-
     res.status(204).send();
 }
 
@@ -131,7 +126,6 @@ export const findGamesByUserId = async (req, res) => {
     if (!userId) {
         return res.status(400).json({ error: "User ID is required." });
     }
-
     try {
         const games = await gameDataMapper.findGamesByUserId(userId);
         console.log(games);  // Afficher les jeux pour vérifier que 'id' est inclus

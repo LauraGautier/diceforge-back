@@ -1,13 +1,13 @@
 import bcrypt from 'bcryptjs';
 import PasswordDataMapper from '../datamappers/password.datamapper.js';
-import pool from '../../config/pg.config.js'; // Importation du pool de connexions
+import pool from '../../config/pg.config.js'; 
 
 const passwordDataMapper = new PasswordDataMapper(pool);
 
 export const resetPassword = async (req, res) => {
     try {
         const { token, id, password, confirmPassword } = req.body;
-
+        
         if (!token || !id) {
             console.error("Token or ID missing");
             return res.status(400).json({ error: "Token et ID requis" });
