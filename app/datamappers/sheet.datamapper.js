@@ -66,7 +66,6 @@ class SheetDataMapper {
             WHERE name = $${index}
             RETURNING *;
         `;
-
         const result = await this.pool.query(query, values);
         return result.rows[0] || null;
     }

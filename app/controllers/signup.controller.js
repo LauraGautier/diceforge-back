@@ -9,8 +9,6 @@ const userDataMapper = new UserDataMapper(pool);
 export const createUser = async (req, res) => {
 
     const { lastname, firstname, email, password, confirmPassword } = req.body;
-
-    // Validate the user data with zod
      try {
         userSchema.parse({ lastname, firstname, password });
     } catch (e) {

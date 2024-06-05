@@ -1,11 +1,7 @@
 
-// Charger les variables d'environnement
 import 'dotenv/config';
-
-// Importation des modules avec ES6
 import express from 'express';
 import { createServer } from 'node:http';
-
 import router from './app/routers/main.router.js';
 import session from 'express-session';
 import cors from 'cors';
@@ -22,15 +18,11 @@ const PORT = process.env.PORT || 5000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Rendre les fichiers statiques disponibles
 app.use(express.static('./public'));
 
 // Activation CORS
 app.use(cors(corsOptions));
 
-
-
-// Configuration des sessions
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -40,19 +32,14 @@ app.use(
   })
 );
 
-// Configuration de Socket.IO
-const io = setupSocket(httpServer); // Utilisation de la fonction importée
+const io = setupSocket(httpServer); 
 
-// Routes
 app.use(router);
 
-// Middleware pour gérer les erreurs
 app.use(errorHandler);
 
-// Configuration de Swagger
 setupSwagger(app);
 
-// Démarrage du serveur HTTP
 httpServer.listen(PORT, () => {
   console.log(`Application lancée sur le port ${PORT}`);
   console.log(`Documentation de l'API disponible à http://localhost:${PORT}${process.env.API_DOCUMENTATION}`);

@@ -29,19 +29,16 @@ export const updateSheet = async (req, res) => {
     if (!updatedSheet) {
         return res.status(404).json({ error: "La fiche n'a pas été trouvée." });
     }
-
     res.status(200).json(updatedSheet);
 };
 
 export const deleteSheet = async (req, res) => {
     const id = req.params.id;
     await sheetDataMapper.deleteSheet(id);
-
     res.status(204).send();
 }
 
 export const getAllSheets = async (req, res) => {
- 
     const sheets = await sheetDataMapper.findAllSheets();
 
     if (!sheets) {

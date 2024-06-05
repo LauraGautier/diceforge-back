@@ -9,7 +9,6 @@ import licenseRouter from "./license.router.js";
 
 const router = express.Router();
 
-
 router.use("/api", (authRouter));
 router.use("/api", (userRouter));
 router.use("/api", (isLoggedIn, gameRouter));
