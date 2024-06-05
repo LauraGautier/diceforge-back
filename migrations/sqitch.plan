@@ -1,0 +1,8 @@
+%syntax-version=1.0.0
+%project=diceforge
+
+init 2024-05-14T09:26:38Z solremi <jeremie.rocquet@outlook.fr> # initialisation de la bdd
+reset-password 2024-05-16T09:19:14Z Benjamin Beauvallet <benjamin.beauvallet@oclock.school> # ajouter deux colonnes à la BDD pour gérer les tokens correspondant
+seedLicenses 2024-05-22T09:18:11Z solremi <jeremie.rocquet@outlook.fr> # seeding licenses into license
+invitation-token 2024-05-29T11:26:30Z solremi <jeremie.rocquet@outlook.fr> # add invitation token into table user
+emailIntoGame 2024-05-30T12:56:54Z solremi <jeremie.rocquet@outlook.fr> # ajout de email dans table game
