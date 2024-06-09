@@ -12,7 +12,7 @@ import setupSwagger from './config/swagger.config.js';
 
 const app = express();
 const httpServer = createServer(app);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware pour parser les corps de requêtes
 app.use(express.urlencoded({ extended: true }));
