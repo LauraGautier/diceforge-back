@@ -12,7 +12,7 @@ Ce projet a été réalisé dans le cadre de la présentation au Titre Professio
 1. **Cloner le répertoire :**
 
     ```bash
-    git clone https://github.com/username/backend-repo.git backend
+    git clone git@github.com:LauraGautier/diceforge-back.git
     cd backend
     ```
 
