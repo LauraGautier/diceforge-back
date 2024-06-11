@@ -38,20 +38,21 @@ Ce projet a été réalisé dans le cadre de la présentation au Titre Professio
 
     ```env
     PORT=3000
-    SESSION_SECRET=whatisthesecretkeyforbettersecurityandgetanhighestpower
+    SESSION_SECRET=your-session-secret
 
-    EMAIL_USER=diceforgeteam@outlook.com
-    EMAIL_PASS=Bfljb1307
+    EMAIL_USER=your-email-user
+    EMAIL_PASS=your-email-password
 
-    DB_USER=default
-    DB_HOST=ep-wispy-fog-a2bpzouz-pooler.eu-central-1.aws.neon.tech
-    DB_NAME=diceforge
-    DB_PASSWORD=TcUw08hWZCmq
-    DB_PORT=5432
+    DB_USER=your-db-user
+    DB_HOST=your-db-host
+    DB_NAME=your-db-name
+    DB_PASSWORD=your-db-password
+    DB_PORT=your-db-port
 
-    JWT_SECRET=z98$x7CkKjL9z*n2q6Mz$BzX7!z*8vMn3zX5CpPmZx$7XJkKpZx7$C
+    JWT_SECRET=your-jwt-secret
     API_DOCUMENTATION=/api-docs
     ```
+
 
 3. **Ajouter le fichier `.env` au fichier `.gitignore` :**
 
