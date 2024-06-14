@@ -5,7 +5,7 @@ import app from '../index.js';
 let server;
 
 test.before('setup', async t => {
-  process.env.PORT = 5001;
+  process.env.PORT = 3001;
   server = app.listen(process.env.PORT);
 });
 

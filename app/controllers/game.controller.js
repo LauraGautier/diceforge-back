@@ -27,6 +27,8 @@ export const createGame = async (req, res) => {
     const userId = req.userData.id;
     const email = req.body.email;
 
+    console.log("Received email:", email);
+
     if (!userId) {
         return res.status(401).json({ error: 'Utilisateur non connecté.' });
     }
@@ -53,6 +55,7 @@ export const createGame = async (req, res) => {
                 console.error("Erreur lors de l'envoi de l'email:", error);
                 return res.status(500).json({ error: "Erreur lors de l'envoi de l'email" });
             }
+            console.log('Email d\'invitation envoyé avec succès');
         });
 
         return res.status(201).json(createdGame);
@@ -125,6 +128,7 @@ export const findGamesByUserId = async (req, res) => {
     }
     try {
         const games = await gameDataMapper.findGamesByUserId(userId);
+        console.log(games);  // Afficher les jeux pour vérifier que 'id' est inclus
         return res.status(200).json(games);
     } catch (error) {
         console.error('Failed to fetch games:', error);
