@@ -1,5 +1,5 @@
 const corsOptions = {
-  origin: ['http://localhost:5173', 'https://dice-forge.herokuapp.com'], // adresse du serveur front
+  origin: ['*'], // adresse du serveur front
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
   allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
   credentials: true, 
