@@ -8,8 +8,9 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon index.js",
-    "build": "cd ../diceforge-front && npm install && npm run build",
+    "build": "cd ../diceforge-front && pnpm install && pnpm run build",
     "start": "node index.js",
+    "heroku-postbuild": "cd back && pnpm install && pnpm run build",
     "deploy": "node deploy-db.js"
   },
   "keywords": [],
