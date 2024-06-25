@@ -8,9 +8,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon index.js",
-    "build": "node index.js",
-    "start": "node index.js",
-    "deploy": "node deploy-db.js"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",

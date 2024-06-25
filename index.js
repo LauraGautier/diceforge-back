@@ -53,7 +53,7 @@ app.use(errorHandler);
 setupSwagger(app);
 
 httpServer.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on https://dice-forge-4eec83d84796.herokuapp.com:${PORT}/`);
 });
 
 export default app;
