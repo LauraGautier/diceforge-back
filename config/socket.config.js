@@ -3,7 +3,7 @@ import { Server as WebsocketServer } from "socket.io";
 function setupSocket(httpServer) {
     const io = new WebsocketServer(httpServer, {
         cors: {
-            origin: ['http://localhost:5173', 'http://roje6147.odns.fr'], // Adresses du frontend
+            origin: ['http://localhost:5173', 'https://dice-forge.herokuapp.com'], // Adresses du frontend
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
             allowedHeaders: ['Content-Type', 'Authorization'],
             credentials: true,
