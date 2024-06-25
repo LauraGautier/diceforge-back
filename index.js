@@ -19,19 +19,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Détermine le chemin vers le répertoire dist du front-end
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../diceforge-front/dist')));
-
-// The "catchall" handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../diceforge-front/dist', 'index.html'));
-});
-
 // Activation CORS
 app.use(cors(corsOptions));
 
@@ -45,6 +32,11 @@ app.use(
 );
 
 const io = setupSocket(httpServer);
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello World!' });
+}
+);
 
 app.use(router);
 
