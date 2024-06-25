@@ -1,7 +1,7 @@
- import pool from '../../config/pg.config.js';
+ import client from '../../config/pg.config.js';
 import SheetDataMapper from '../datamappers/sheet.datamapper.js';
 
-const sheetDataMapper = new SheetDataMapper(pool);
+const sheetDataMapper = new SheetDataMapper(client);
 
 export const getSheet = async (req, res) => {
     const name = req.params.name;

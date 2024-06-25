@@ -1,13 +1,13 @@
 
 class GameDataMapper {
 
-    constructor(pool) {
-        this.pool = pool;
+    constructor(client) {
+        this.client = client;
     }
 
     async findGameById(id) {
         const query = 'SELECT * FROM game WHERE id = $1';
-        const result = await this.pool.query(query, [id]);
+        const result = await this.client.query(query, [id]);
         return result.rows[0] || null;
     }
 
@@ -18,18 +18,18 @@ class GameDataMapper {
             JOIN play ON game.id = play.game_id
             WHERE play.user_id = $1
             `;
-        const result = await this.pool.query(query, [userId]);
+        const result = await this.client.query(query, [userId]);
         return result.rows;
     }
 
     async findAllUserEmail(email) {
         const query = 'SELECT * FROM "user" WHERE email = $1';
-        const result = await this.pool.query(query, [email]);
+        const result = await this.client.query(query, [email]);
         return result.rows;
     }
 
     async createGame(game, userId) {
-        const client = await this.pool.connect();
+        const client = await this.client.connect();
         try {
             await client.query('BEGIN');
 
@@ -61,7 +61,7 @@ class GameDataMapper {
             await client.query('ROLLBACK');
             throw error;
         } finally {
-            client.release();   // Release the client back to the pool for no saturation
+            client.release();   // Release the client back to the client for no saturation
         }
     }
     
@@ -97,7 +97,7 @@ class GameDataMapper {
             WHERE id = $${index}
             RETURNING *;
         `;
-        const result = await this.pool.query(query, values);
+        const result = await this.client.query(query, values);
         return result.rows[0];
     }
 
@@ -105,7 +105,7 @@ class GameDataMapper {
         const deletePlayQuery = 'DELETE FROM play WHERE game_id = $1';
         const deleteGameQuery = 'DELETE FROM game WHERE id = $1';
 
-        const client = await this.pool.connect();
+        const client = await this.client.connect();
 
         try {
             await client.query('BEGIN'); 
@@ -128,7 +128,7 @@ class GameDataMapper {
             INSERT INTO play (role, user_id, game_id) 
             VALUES ('player', $1, $2);
         `;
-        await this.pool.query(query, [userId, gameId]);
+        await this.client.query(query, [userId, gameId]);
     }
 
 }

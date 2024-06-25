@@ -1,7 +1,7 @@
-import pool from '../../config/pg.config.js'; 
+import client from '../../config/pg.config.js'; 
 import ProfileDataMapper from '../datamappers/profile.datamapper.js';
 
-const profileDataMapper = new ProfileDataMapper(pool);
+const profileDataMapper = new ProfileDataMapper(client);
 
 export const getProfile = async (req, res) => {
     const profile = await profileDataMapper.getProfile();

@@ -1,17 +1,17 @@
 class SheetDataMapper {
-    constructor(pool) {
-        this.pool = pool;
+    constructor(client) {
+        this.client = client;
     }
 
     async findSheetByName(name) {
         const query = 'SELECT * FROM sheet WHERE name = $1';
-        const result = await this.pool.query(query, [name]);
+        const result = await this.client.query(query, [name]);
         return result.rows[0] || null;
     }
 
     async findAllSheets() {
         const query = 'SELECT * FROM sheet';
-        const result = await this.pool.query(query);
+        const result = await this.client.query(query);
         return result.rows;
     }
     
@@ -26,7 +26,7 @@ class SheetDataMapper {
             RETURNING *;
         `;
         const values = [sheet.name, sheet.image, sheet.class, sheet.level, sheet.game_id];
-        const result = await this.pool.query(query, values);
+        const result = await this.client.query(query, values);
         return result.rows[0];
     }
 
@@ -66,13 +66,13 @@ class SheetDataMapper {
             WHERE name = $${index}
             RETURNING *;
         `;
-        const result = await this.pool.query(query, values);
+        const result = await this.client.query(query, values);
         return result.rows[0] || null;
     }
 
     async deleteSheet(id) {
         const query = 'DELETE FROM sheet WHERE id = $1';
-        await this.pool.query(query, [id]);
+        await this.client.query(query, [id]);
     }
 }
 

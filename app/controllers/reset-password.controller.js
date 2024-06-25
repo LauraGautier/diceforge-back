@@ -1,8 +1,8 @@
 import bcrypt from 'bcryptjs';
 import PasswordDataMapper from '../datamappers/password.datamapper.js';
-import pool from '../../config/pg.config.js'; 
+import client from '../../config/pg.config.js'; 
 
-const passwordDataMapper = new PasswordDataMapper(pool);
+const passwordDataMapper = new PasswordDataMapper(client);
 
 export const resetPassword = async (req, res) => {
     try {

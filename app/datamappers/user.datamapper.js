@@ -1,13 +1,13 @@
 class UserDataMapper {
 
-    constructor(pool) {
-        this.pool = pool;
+    constructor(client) {
+        this.client = client;
     }
 
     async findUserByEmail(email) {
         const query = 'SELECT * FROM "user" WHERE email = $1';
         try {
-            const result = await this.pool.query(query, [email]);
+            const result = await this.client.query(query, [email]);
             return result.rows[0] || null;
         } catch (error) {
             console.error('Erreur lors de la recherche de l\'utilisateur par email:', error);
@@ -19,7 +19,7 @@ class UserDataMapper {
         const query = 'INSERT INTO "user" (lastname, firstname, email, password) VALUES ($1, $2, $3, $4)';
         const values = [lastname, firstname, email, hashedPassword];
         try {
-            await this.pool.query(query, values);
+            await this.client.query(query, values);
         } catch (error) {
             console.error('Erreur lors de la création de l\'utilisateur:', error);
             throw error;

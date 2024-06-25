@@ -2,10 +2,10 @@ import { generateResetToken } from '../utils/token.util.js';
 import { sendPasswordResetEmail } from '../../config/nodemailer.config.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 import PasswordDataMapper from '../datamappers/password.datamapper.js';
-import pool from '../../config/pg.config.js';
+import client from '../../config/pg.config.js';
 
-const userDataMapper = new UserDataMapper(pool);
-const passwordDataMapper = new PasswordDataMapper(pool);
+const userDataMapper = new UserDataMapper(client);
+const passwordDataMapper = new PasswordDataMapper(client);
 
 export const requestPasswordReset = async (req, res) => {
     const { email } = req.body;

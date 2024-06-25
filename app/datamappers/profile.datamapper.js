@@ -1,12 +1,12 @@
 class ProfileDatamapper {
 
-    constructor(pool) {
-        this.pool = pool;
+    constructor(client) {
+        this.client = client;
     }
 
     async getProfile() {
         const query = 'SELECT * FROM profile';
-        const result = await this.pool.query(query);
+        const result = await this.client.query(query);
         return result.rows[0] || null;
     }
     
@@ -35,7 +35,7 @@ class ProfileDatamapper {
             RETURNING *;
         `;
 
-        const result = await this.pool.query(query, values);
+        const result = await this.client.query(query, values);
         return result.rows[0];
     }
 }

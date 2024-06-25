@@ -1,4 +1,4 @@
-import pool from '../../config/pg.config.js';
+import client from '../../config/pg.config.js';
 import GameDataMapper from '../datamappers/game.datamapper.js';
 import LicenseDataMapper from '../datamappers/license.datamapper.js';
 import { sendInvitationEmail, transporter } from '../../config/nodemailer.config.js';
@@ -6,9 +6,9 @@ import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 
-const gameDataMapper = new GameDataMapper(pool);
-const licenseDataMapper = new LicenseDataMapper(pool);
-const userDataMapper = new UserDataMapper(pool);
+const gameDataMapper = new GameDataMapper(client);
+const licenseDataMapper = new LicenseDataMapper(client);
+const userDataMapper = new UserDataMapper(client);
 
 export const getGame = async (req, res) => {
 

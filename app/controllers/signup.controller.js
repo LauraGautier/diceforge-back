@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
-import pool from '../../config/pg.config.js';
+import client from '../../config/pg.config.js';
 import UserDataMapper from '../datamappers/user.datamapper.js';
 import emailValidator from 'email-validator';
 import { userSchema } from '../utils/user.validator.util.js';
 
-const userDataMapper = new UserDataMapper(pool);
+const userDataMapper = new UserDataMapper(client);
 
 export const createUser = async (req, res) => {
 
