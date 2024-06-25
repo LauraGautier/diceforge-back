@@ -5,7 +5,7 @@ import jwtAuthMiddleware from "../middlewares/jwtAuth.middleware.js";
 
 const router = express.Router();
 
-router.get("/game", jwtAuthMiddleware, cw(gameController.getGame));
+router.get("/game", cw(gameController.getGame));
 router.get("/game/:id", jwtAuthMiddleware, cw(gameController.getGame));
 router.get("/joingame", jwtAuthMiddleware, cw(gameController.joinGame));
 router.post("/game", jwtAuthMiddleware, cw(gameController.createGame));
