@@ -16,7 +16,7 @@ export const transporter = nodemailer.createTransport({
 });
 
 export const sendInvitationEmail = async (email, gameId, token) => {
-    const invitationLink = `http://localhost:5173/api/joingame?token=${token}`;
+    const invitationLink = `https://dice-forge.herokuapp.com/api/joingame?token=${token}`;
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -30,7 +30,7 @@ export const sendInvitationEmail = async (email, gameId, token) => {
 };
 
 export const sendPasswordResetEmail = async (user, resetToken) => {
-    const resetLink = `http://localhost:5173/api/reset-password?token=${resetToken}&id=${user.id}`;
+    const resetLink = `https://dice-forge.herokuapp.com/api/reset-password?token=${resetToken}&id=${user.id}`;
     const mailOptions = {
         to: user.email,
         from: 'diceforgeteam@outlook.com',
