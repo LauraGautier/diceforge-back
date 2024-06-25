@@ -1,7 +1,8 @@
-
 import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'node:http';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import router from './app/routers/main.router.js';
 import session from 'express-session';
 import cors from 'cors';
@@ -18,7 +19,18 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(express.static('./public'));
+// Détermine le chemin vers le répertoire dist du front-end
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from the React app
+app.use(express.static(path.join(__dirname, '../diceforge-front/dist')));
+
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../diceforge-front/dist', 'index.html'));
+});
 
 // Activation CORS
 app.use(cors(corsOptions));
@@ -32,7 +44,7 @@ app.use(
   })
 );
 
-const io = setupSocket(httpServer); 
+const io = setupSocket(httpServer);
 
 app.use(router);
 
@@ -41,6 +53,7 @@ app.use(errorHandler);
 setupSwagger(app);
 
 httpServer.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 export default app;

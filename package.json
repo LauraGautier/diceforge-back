@@ -8,6 +8,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon index.js",
+    "build": "cd ../diceforge-front && npm install && npm run build",
     "start": "node index.js",
     "deploy": "node deploy-db.js"
   },
