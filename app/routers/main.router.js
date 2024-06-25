@@ -14,6 +14,6 @@ router.use("/api", (userRouter));
 router.use("/api", (isLoggedIn, gameRouter));
 router.use("/api", (isLoggedIn, sheetRouter));
 router.use("/api", (isLoggedIn, profileRouter));
-router.use("/api", (isLoggedIn, licenseRouter));
+router.use("/api", (licenseRouter));
 
 export default router;
