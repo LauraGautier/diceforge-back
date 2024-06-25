@@ -8,7 +8,9 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon index.js",
-    "build": "node deploy-db.js",
+    "db:create": "PGSSLMODE=require PGPASSWORD=wP1i7W2iP397j9m8H9q3YqgH psql -h only-included-grubworm-pdt.a1.pgedge.io -p 5432 -U admin -d diceforge -f migrations/database/createtable.sql",
+    "db:seed": "PGSSLMODE=require PGPASSWORD=wP1i7W2iP397j9m8H9q3YqgH psql -h only-included-grubworm-pdt.a1.pgedge.io -p 5432 -U admin -d diceforge -f migrations/database/seedtable.sql",
+    "build": "npm run db:create && npm run db:seed",
     "start": "node index.js"
   },
   "keywords": [],
